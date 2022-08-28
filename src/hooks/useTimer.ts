@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from "react"
+import { PersistedState } from "../constants/persisted"
+import { createState } from "../utils/persisted"
+
+const useTimerState = createState<number>(PersistedState.Timer)
 
 export const useTimer = (isRunning: boolean) => {
   const timerRef = useRef<NodeJS.Timer | undefined>()
-  const [time, setTime] = useState<number>(Date.now())
+  const [time, setTime] = useTimerState(Date.now())
 
   useEffect(() => {
     if (isRunning) {

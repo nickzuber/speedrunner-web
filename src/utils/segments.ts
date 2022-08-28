@@ -96,6 +96,16 @@ export function resetStack(stack: SegmentStack): NotStartedSegmentStack {
   }
 }
 
+export function completeSegment(segment: RunningSegment): CompletedSegment {
+  const end = Date.now()
+  const split = end - segment.start
+  return {
+    ...segment,
+    end,
+    pb: segment.pb ? Math.min(split, segment.pb) : split,
+  }
+}
+
 export function completeRunningSegment(stack: SegmentStack) {
   // Empty stacks are ones that have not been initialized with any segments yet.
   if (isEmptySegmentStack(stack)) {
@@ -128,10 +138,7 @@ export function completeRunningSegment(stack: SegmentStack) {
 
   // Complete out the running segment and begin the next queued one.
   if (isInProgressSegmentStack(stack)) {
-    const completedSegment: CompletedSegment = {
-      ...stack.running,
-      end: Date.now(),
-    }
+    const completedSegment = completeSegment(stack.running)
 
     const nextSegment = stack.queued.shift()
 

@@ -1,4 +1,5 @@
-export const PersistedState = {
-  Segments: "segments",
-  Stack: "stack",
+export enum PersistedState {
+  Segments = "segments",
+  Stack = "stack",
+  Timer = "timer",
 }
