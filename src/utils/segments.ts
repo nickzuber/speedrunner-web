@@ -76,9 +76,7 @@ export function fullResetSegment(segment: Segment): QueuedSegment {
   }
 }
 
-export function notEmpty<TValue>(
-  value: TValue | null | undefined
-): value is TValue {
+export function notEmpty<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
 }
 
