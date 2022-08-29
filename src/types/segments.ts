@@ -21,12 +21,6 @@ export interface CompletedSegment extends BaseSegment {
 
 export type Segment = QueuedSegment | RunningSegment | CompletedSegment
 
-export interface EmptySegmentStack {
-  queued: []
-  running: null
-  completed: []
-}
-
 export interface NotStartedSegmentStack {
   queued: Array<QueuedSegment>
   running: null
@@ -46,7 +40,6 @@ export interface FinishedSegmentStack {
 }
 
 export type SegmentStack =
-  | EmptySegmentStack
   | NotStartedSegmentStack
   | InProgressSegmentStack
   | FinishedSegmentStack

@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from "uuid"
 import {
   CompletedSegment,
-  EmptySegmentStack,
   FinishedSegmentStack,
   InProgressSegmentStack,
   NotStartedSegmentStack,
@@ -18,16 +17,6 @@ export function createNewSegment(name: string): QueuedSegment {
     start: null,
     end: null,
   }
-}
-
-export function isEmptySegmentStack(
-  stack: SegmentStack
-): stack is EmptySegmentStack {
-  return (
-    stack.queued.length === 0 &&
-    stack.running === null &&
-    stack.completed.length === 0
-  )
 }
 
 export function isNotStartedSegmentStack(
@@ -78,18 +67,41 @@ export function resetSegment(segment: Segment): QueuedSegment {
   }
 }
 
+export function fullResetSegment(segment: Segment): QueuedSegment {
+  return {
+    ...segment,
+    pb: undefined,
+    start: null,
+    end: null,
+  }
+}
+
 export function notEmpty<TValue>(
   value: TValue | null | undefined
 ): value is TValue {
   return value !== null && value !== undefined
 }
 
+export function fullResetStack(stack: SegmentStack): NotStartedSegmentStack {
+  return {
+    queued: [
+      ...stack.completed.map(resetSegment),
+      stack.running ? resetSegment(stack.running) : null,
+      ...stack.queued,
+    ]
+      .filter(notEmpty)
+      .map(fullResetSegment),
+    running: null,
+    completed: [],
+  }
+}
+
 export function resetStack(stack: SegmentStack): NotStartedSegmentStack {
   return {
     queued: [
-      ...stack.queued,
-      stack.running ? resetSegment(stack.running) : null,
       ...stack.completed.map(resetSegment),
+      stack.running ? resetSegment(stack.running) : null,
+      ...stack.queued,
     ].filter(notEmpty),
     running: null,
     completed: [],
@@ -108,7 +120,11 @@ export function completeSegment(segment: RunningSegment): CompletedSegment {
 
 export function completeRunningSegment(stack: SegmentStack) {
   // Empty stacks are ones that have not been initialized with any segments yet.
-  if (isEmptySegmentStack(stack)) {
+  if (
+    stack.queued.length === 0 &&
+    stack.running === null &&
+    stack.completed.length === 0
+  ) {
     // No-op right now.
     return stack
   }

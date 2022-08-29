@@ -4,6 +4,7 @@ import { createState } from "../utils/persisted"
 import {
   completeRunningSegment,
   createNewSegment,
+  fullResetStack,
   resetStack,
 } from "../utils/segments"
 
@@ -11,10 +12,10 @@ const useSegmentStackState = createState<SegmentStack>(PersistedState.Stack)
 
 // @TODO(nickz) hard-coded, will delete later
 const initialSegments: Array<QueuedSegment> = [
-  createNewSegment("Get to the J"),
-  createNewSegment("J arrives"),
-  createNewSegment("Get to Canal"),
-  createNewSegment("Elevator doors close"),
+  createNewSegment("(1) Get to the J"),
+  createNewSegment("(2) J arrives"),
+  createNewSegment("(3) Get to Canal"),
+  createNewSegment("(4) Elevator doors close"),
 ]
 const initialStack: SegmentStack = {
   queued: initialSegments,
@@ -24,6 +25,7 @@ const initialStack: SegmentStack = {
 
 export type SegmentsOptions = {
   stack: SegmentStack
+  fullResetStack: () => void
   resetStack: () => void
   advanceStack: () => void
   updateSegment: (id: string, newName: string) => void
@@ -105,6 +107,7 @@ export function useSegments(): SegmentsOptions {
   return {
     stack,
     advanceStack,
+    fullResetStack: () => setStack(fullResetStack(stack)),
     resetStack: () => setStack(resetStack(stack)),
     updateSegment,
     moveSegment,
