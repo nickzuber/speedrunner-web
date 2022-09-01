@@ -1,6 +1,6 @@
-import { PersistedState } from "../constants/persisted"
-import { QueuedSegment, Segment, SegmentStack } from "../types/segments"
-import { createState } from "../utils/persisted"
+import { useState } from "react"
+import { Mocks } from "../constants/mocks"
+import { SegmentStack } from "../types/segments"
 import {
   completeRunningSegment,
   createNewSegment,
@@ -8,37 +8,12 @@ import {
   resetStack,
   saveStackPersonalBests,
 } from "../utils/segments"
+import { SegmentsOptions } from "./useSegments"
 
-const useSegmentStackState = createState<SegmentStack>(PersistedState.Stack)
-
-// @TODO(nickz) hard-coded, will delete later
-const initialSegments: Array<QueuedSegment> = [
-  createNewSegment("Jaunt to the Jay"),
-  createNewSegment("Jay takes me away"),
-  createNewSegment("Swim in the Canal"),
-  createNewSegment("Enter the elevator"),
-]
-const initialStack: SegmentStack = {
-  queued: initialSegments,
-  running: null,
-  completed: [],
-}
-
-export type SegmentsOptions = {
-  stack: SegmentStack
-  fullResetStack: () => void
-  resetStack: () => void
-  advanceStack: () => void
-  updateSegment: (id: string, newName: string) => void
-  moveSegment: (id: string, newPosition: number) => void
-  addNewSegment: (name: string) => void
-  deleteSegment: (id: string) => void
-  clearSegments: () => void
-  saveSegments: () => void
-}
-
-export function useSegments(): SegmentsOptions {
-  const [stack, setStack] = useSegmentStackState(initialStack)
+export function useSegmentsMock(initialStack?: SegmentStack): SegmentsOptions {
+  const [stack, setStack] = useState<SegmentStack>(
+    initialStack || Mocks.Stacks.queued
+  )
 
   function updateSegment(id: string, newName: string) {
     const initialStack = resetStack(stack)
@@ -105,7 +80,6 @@ export function useSegments(): SegmentsOptions {
       completed: [],
     })
   }
-
   return {
     stack,
     advanceStack,

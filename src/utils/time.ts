@@ -15,9 +15,11 @@ export function formatTimestamp(ts: number): string {
     return `${minutes % 60}:${(seconds % 60).toFixed(2).padStart(5, "0")}`
   }
 
-  return `${hours}:${minutes % 60}:${(seconds % 60)
+  return `${hours}:${(minutes % 60).toString().padStart(2, "0")}:${(
+    seconds % 60
+  )
     .toFixed(2)
-    .padStart(4, "0")}`
+    .padStart(5, "0")}`
 }
 
 export function formatSeconds(seconds: number): string {

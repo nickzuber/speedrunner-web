@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid"
 import {
   CompletedSegment,
-  FinishedSegmentStack,
-  InProgressSegmentStack,
-  NotStartedSegmentStack,
+  CompletedSegmentStack,
+  RunningSegmentStack,
+  QueuedSegmentStack,
   QueuedSegment,
   RunningSegment,
   Segment,
@@ -19,9 +19,27 @@ export function createNewSegment(name: string): QueuedSegment {
   }
 }
 
-export function isNotStartedSegmentStack(
+export function createRunningSegment(name: string): RunningSegment {
+  return {
+    id: uuidv4(),
+    name,
+    start: Date.now(),
+    end: null,
+  }
+}
+
+export function createCompletedSegment(name: string): CompletedSegment {
+  return {
+    id: uuidv4(),
+    name,
+    start: Date.now(),
+    end: Date.now() + 15 * 60 * 1000,
+  }
+}
+
+export function isQueuedSegmentStack(
   stack: SegmentStack
-): stack is NotStartedSegmentStack {
+): stack is QueuedSegmentStack {
   return (
     stack.queued.length > 0 &&
     stack.running === null &&
@@ -29,15 +47,15 @@ export function isNotStartedSegmentStack(
   )
 }
 
-export function isInProgressSegmentStack(
+export function isRunningSegmentStack(
   stack: SegmentStack
-): stack is InProgressSegmentStack {
+): stack is RunningSegmentStack {
   return stack.running !== null
 }
 
-export function isFinishedSegmentStack(
+export function isCompletedSegmentStack(
   stack: SegmentStack
-): stack is FinishedSegmentStack {
+): stack is CompletedSegmentStack {
   return (
     stack.queued.length === 0 &&
     stack.running === null &&
@@ -80,8 +98,9 @@ export function notEmpty<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
 }
 
-export function fullResetStack(stack: SegmentStack): NotStartedSegmentStack {
+export function fullResetStack(stack: SegmentStack): QueuedSegmentStack {
   return {
+    ...stack,
     queued: [
       ...stack.completed.map(resetSegment),
       stack.running ? resetSegment(stack.running) : null,
@@ -94,8 +113,9 @@ export function fullResetStack(stack: SegmentStack): NotStartedSegmentStack {
   }
 }
 
-export function resetStack(stack: SegmentStack): NotStartedSegmentStack {
+export function resetStack(stack: SegmentStack): QueuedSegmentStack {
   return {
+    ...stack,
     queued: [
       ...stack.completed.map(resetSegment),
       stack.running ? resetSegment(stack.running) : null,
@@ -106,13 +126,76 @@ export function resetStack(stack: SegmentStack): NotStartedSegmentStack {
   }
 }
 
+export function getSegmentSplit(segment: CompletedSegment): number {
+  return segment.end - segment.start
+}
+
+export function saveSegmentPersonalBest(
+  segment: CompletedSegment
+): CompletedSegment {
+  const split = getSegmentSplit(segment)
+  return {
+    ...segment,
+    pb: segment.pb ? Math.min(split, segment.pb) : split,
+  }
+}
+
+export function getCompletedStackTime(stack: CompletedSegmentStack): number {
+  return stack.completed.reduce(
+    (sum, segment) => sum + getSegmentSplit(segment),
+    0
+  )
+}
+
+export function getTheoreticalBestTime(stack: SegmentStack): number {
+  if (isCompletedSegmentStack(stack)) {
+    return stack.completed.reduce(
+      (total, segment) => (total += segment.pb || 0),
+      0
+    )
+  } else if (isQueuedSegmentStack(stack)) {
+    return stack.queued.reduce(
+      (total, segment) => (total += segment.pb || 0),
+      0
+    )
+  } else if (isRunningSegmentStack(stack)) {
+    const bestQueued = stack.queued.reduce(
+      (total, segment) => (total += segment.pb || 0),
+      0
+    )
+    const bestCompleted = stack.completed.reduce(
+      (total, segment) => (total += segment.pb || 0),
+      0
+    )
+    const bestRunning = stack.running.pb || 0
+    return bestQueued + bestCompleted + bestRunning
+  }
+
+  return 0
+}
+
+export function saveStackPersonalBests(
+  stack: SegmentStack
+): CompletedSegmentStack {
+  if (!isCompletedSegmentStack(stack)) {
+    throw new Error("Tried to save an incomplete segment stack.")
+  }
+
+  return {
+    queued: stack.queued,
+    running: stack.running,
+    completed: stack.completed.map(saveSegmentPersonalBest),
+    pb: stack.pb
+      ? Math.min(stack.pb, getCompletedStackTime(stack))
+      : getCompletedStackTime(stack),
+  }
+}
+
 export function completeSegment(segment: RunningSegment): CompletedSegment {
   const end = Date.now()
-  const split = end - segment.start
   return {
     ...segment,
     end,
-    pb: segment.pb ? Math.min(split, segment.pb) : split,
   }
 }
 
@@ -128,7 +211,7 @@ export function completeRunningSegment(stack: SegmentStack) {
   }
 
   // Kick off the first segment.
-  if (isNotStartedSegmentStack(stack)) {
+  if (isQueuedSegmentStack(stack)) {
     const nextSegment = stack.queued.shift()
 
     if (!nextSegment) {
@@ -144,14 +227,15 @@ export function completeRunningSegment(stack: SegmentStack) {
     }
 
     return {
+      ...stack,
       queued: stack.queued,
       running: runningNextSegment,
       completed: stack.completed,
-    } as InProgressSegmentStack
+    } as RunningSegmentStack
   }
 
   // Complete out the running segment and begin the next queued one.
-  if (isInProgressSegmentStack(stack)) {
+  if (isRunningSegmentStack(stack)) {
     const completedSegment = completeSegment(stack.running)
 
     const nextSegment = stack.queued.shift()
@@ -159,10 +243,11 @@ export function completeRunningSegment(stack: SegmentStack) {
     // The final segment was completed.
     if (!nextSegment) {
       return {
+        ...stack,
         queued: [],
         running: null,
         completed: [...stack.completed, completedSegment],
-      } as FinishedSegmentStack
+      } as CompletedSegmentStack
     }
 
     const runningNextSegment: RunningSegment = {
@@ -172,10 +257,11 @@ export function completeRunningSegment(stack: SegmentStack) {
     }
 
     return {
+      ...stack,
       queued: stack.queued,
       running: runningNextSegment,
       completed: [...stack.completed, completedSegment],
-    } as InProgressSegmentStack
+    } as RunningSegmentStack
   }
 
   // The stack must already be completed. This is a no-op right now.
