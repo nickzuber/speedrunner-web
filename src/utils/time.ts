@@ -43,7 +43,7 @@ export function getBadgeSplitIcon(ts: number, pb?: number) {
 }
 
 export function getBadgeSplitWidth(ts: number, running?: boolean) {
-  return !running ? undefined : ts > 1000 * 60 * 10 ? 60 : 50
+  return !running ? undefined : ts > 1000 * 60 * 10 ? 60 : 54
 }
 
 // "15:37.50" -> 937050

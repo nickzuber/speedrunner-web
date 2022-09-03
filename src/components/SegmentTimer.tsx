@@ -1,6 +1,5 @@
-import { CSSProperties, FC, useContext } from "react"
+import { CSSProperties, FC, useContext, useEffect } from "react"
 import { SegmentsContext } from "../contexts/segments"
-import { useTimer } from "../hooks/useTimer"
 import {
   CompletedSegment,
   QueuedSegment,
@@ -9,13 +8,9 @@ import {
 } from "../types/segments"
 import {
   getSegmentSplit,
-  getTheoreticalBestTime,
   isCompletedSegment,
-  isCompletedSegmentStack,
   isQueuedSegment,
-  isQueuedSegmentStack,
   isRunningSegment,
-  isRunningSegmentStack,
 } from "../utils/segments"
 import {
   formatTimestamp,
@@ -28,15 +23,20 @@ import { Badge, BadgeColors, BadgeIcons } from "./Badge"
 export interface SegmentTimerProps {
   segment: Segment
   time: number // current active timer time
+  index: number
 }
 
-export const SegmentTimer: FC<SegmentTimerProps> = ({ segment, time }) => {
+export const SegmentTimer: FC<SegmentTimerProps> = ({
+  segment,
+  time,
+  index,
+}) => {
   if (isRunningSegment(segment)) {
-    return <RunningSegmentTimer segment={segment} time={time} />
+    return <RunningSegmentTimer index={index} segment={segment} time={time} />
   } else if (isQueuedSegment(segment)) {
-    return <QueuedSegmentTimer segment={segment} />
+    return <QueuedSegmentTimer index={index} segment={segment} />
   } else if (isCompletedSegment(segment)) {
-    return <CompletedSegmentTimer segment={segment} />
+    return <CompletedSegmentTimer index={index} segment={segment} />
   }
 
   return null
@@ -97,10 +97,11 @@ const styles: Record<string, CSSProperties> = {
   },
 }
 
-const RunningSegmentTimer: FC<{ segment: RunningSegment; time: number }> = ({
-  segment,
-  time,
-}) => {
+const RunningSegmentTimer: FC<{
+  segment: RunningSegment
+  time: number
+  index: number
+}> = ({ segment, time, index }) => {
   const { stack } = useContext(SegmentsContext)
   const split = time - segment.start
   const formattedTs = formatTimestamp(split)
@@ -111,8 +112,17 @@ const RunningSegmentTimer: FC<{ segment: RunningSegment; time: number }> = ({
 
   const diffTs = shouldShowPbTimerBadge(segment, split)
 
+  useEffect(() => {
+    const elem = document.querySelector(`#segment-${index}`)
+    if (elem) {
+      elem.scrollIntoView({
+        behavior: "smooth",
+      })
+    }
+  }, [])
+
   return (
-    <div style={styles.container}>
+    <div id={`segment-${index}`} style={styles.container}>
       <div
         className={
           stack.completed.length === 0
@@ -153,9 +163,12 @@ const RunningSegmentTimer: FC<{ segment: RunningSegment; time: number }> = ({
   )
 }
 
-const QueuedSegmentTimer: FC<{ segment: QueuedSegment }> = ({ segment }) => {
+const QueuedSegmentTimer: FC<{ segment: QueuedSegment; index: number }> = ({
+  segment,
+  index,
+}) => {
   return (
-    <div style={styles.container}>
+    <div id={`segment-${index}`} style={styles.container}>
       <div style={styles.left}>
         <span style={styles.name}>{segment.name}</span>
         <span style={styles.byline}>
@@ -174,52 +187,51 @@ const QueuedSegmentTimer: FC<{ segment: QueuedSegment }> = ({ segment }) => {
   )
 }
 
-const CompletedSegmentTimer: FC<{ segment: CompletedSegment }> = ({
-  segment,
-}) => {
-  const split = segment.end - segment.start
-  const formattedTs = formatTimestamp(getSegmentSplit(segment))
-  const [mins, ms] = formattedTs.split(".")
+const CompletedSegmentTimer: FC<{ segment: CompletedSegment; index: number }> =
+  ({ segment, index }) => {
+    const split = segment.end - segment.start
+    const formattedTs = formatTimestamp(getSegmentSplit(segment))
+    const [mins, ms] = formattedTs.split(".")
 
-  const numDigits = mins.split("").filter((char) => !isNaN(+char)).length
-  const numColons = mins.length - numDigits
-  const diffTs = segment.pb ? split - segment.pb : null
+    const numDigits = mins.split("").filter((char) => !isNaN(+char)).length
+    const numColons = mins.length - numDigits
+    const diffTs = segment.pb ? split - segment.pb : null
 
-  return (
-    <div style={styles.container}>
-      <div style={styles.left}>
-        <span style={styles.name}>{segment.name}</span>
-        <span style={styles.byline}>
-          {"Best split"}
-          <Badge
-            time={segment.pb ? Math.min(segment.pb, split) : split}
-            color={BadgeColors.Green}
-            icon={BadgeIcons.Crown}
-          />
-        </span>
+    return (
+      <div id={`segment-${index}`} style={styles.container}>
+        <div style={styles.left}>
+          <span style={styles.name}>{segment.name}</span>
+          <span style={styles.byline}>
+            {"Best split"}
+            <Badge
+              time={segment.pb ? Math.min(segment.pb, split) : split}
+              color={BadgeColors.Green}
+              icon={BadgeIcons.Crown}
+            />
+          </span>
+        </div>
+        <div style={styles.right}>
+          {diffTs ? (
+            <Badge
+              color={getBadgeSplitColor(diffTs)}
+              icon={getBadgeSplitIcon(diffTs)}
+              time={Math.abs(diffTs)}
+              width={getBadgeSplitWidth(diffTs, false)}
+              style={{ marginRight: 8 }}
+              size={1}
+              fadeIn={diffTs <= -1000 * 90}
+            />
+          ) : null}
+          <span
+            style={{ ...styles.minutes, width: 18 * numDigits + 6 * numColons }}
+          >
+            {mins}
+          </span>
+          <span style={styles.milliseconds}>{`.${ms}`}</span>
+        </div>
       </div>
-      <div style={styles.right}>
-        {diffTs ? (
-          <Badge
-            color={getBadgeSplitColor(diffTs)}
-            icon={getBadgeSplitIcon(diffTs)}
-            time={Math.abs(diffTs)}
-            width={getBadgeSplitWidth(diffTs, false)}
-            style={{ marginRight: 8 }}
-            size={1}
-            fadeIn={diffTs <= -1000 * 90}
-          />
-        ) : null}
-        <span
-          style={{ ...styles.minutes, width: 18 * numDigits + 6 * numColons }}
-        >
-          {mins}
-        </span>
-        <span style={styles.milliseconds}>{`.${ms}`}</span>
-      </div>
-    </div>
-  )
-}
+    )
+  }
 
 function shouldShowPbTimerBadge(segment: RunningSegment, split: number) {
   if (!segment.pb) {

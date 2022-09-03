@@ -28,8 +28,13 @@ const Template: ComponentStory<any> = ({ isRunning, ...args }) => {
   return (
     <SegmentsProvider stackMock={Mocks.Stacks.queued}>
       <IPhoneContainer>
-        {segments.map((segment) => (
-          <SegmentTimer key={segment.id} time={time} segment={segment} />
+        {segments.map((segment, xid) => (
+          <SegmentTimer
+            key={segment.id}
+            time={time}
+            segment={segment}
+            index={xid}
+          />
         ))}
         <Timer time={time} />
         <Actions {...args} />

@@ -52,6 +52,8 @@ const queuedStack: SegmentStack = withPbs({
   ],
   running: null,
   completed: [],
+  attempts: 1,
+  average: 0,
 })
 
 const runningStack: SegmentStack = withPbs({
@@ -61,6 +63,8 @@ const runningStack: SegmentStack = withPbs({
     createCompletedSegment("Get to the J"),
     createCompletedSegment("J arrives"),
   ],
+  attempts: 1,
+  average: 0,
 })
 
 const completedStack: SegmentStack = withPbs({
@@ -72,6 +76,8 @@ const completedStack: SegmentStack = withPbs({
     createCompletedSegment("Get to the Canal Street subway stop"),
     createCompletedSegment("Elevator doors close"),
   ],
+  attempts: 1,
+  average: 0,
 })
 
 export const Mocks = {

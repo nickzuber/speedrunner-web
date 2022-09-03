@@ -14,15 +14,15 @@ export enum BadgeIcons {
 }
 
 const backgroundColors: Record<BadgeColors, string> = {
-  [BadgeColors.Red]: "#FFCBCB",
-  [BadgeColors.Green]: "#D0E7DB",
-  [BadgeColors.Gold]: "#FFE08F",
+  [BadgeColors.Red]: "#ff1a44",
+  [BadgeColors.Green]: "#37b24d",
+  [BadgeColors.Gold]: "#fab005",
 }
 
 const foregroundColors: Record<BadgeColors, string> = {
-  [BadgeColors.Red]: "#BA0707",
-  [BadgeColors.Green]: "#128748",
-  [BadgeColors.Gold]: "#B78401",
+  [BadgeColors.Red]: "#fff",
+  [BadgeColors.Green]: "#fff",
+  [BadgeColors.Gold]: "#fff",
 }
 
 const badgeIcons: Record<BadgeIcons, React.ReactNode> = {
@@ -109,9 +109,9 @@ export const Badge: FC<BadgeProps> = ({
       className={fadeIn ? "fade-in" : undefined}
       style={{
         fontSize: 12,
-        fontWeight: 500,
+        fontWeight: 600,
         width: width || "fit-content",
-        padding: "0px 4px",
+        padding: "1px 6px",
         display: "inline-flex",
         alignItems: "center",
         justifyContent: width ? undefined : "center",

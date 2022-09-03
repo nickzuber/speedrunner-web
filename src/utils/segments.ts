@@ -198,13 +198,19 @@ export function saveStackPersonalBests(
     throw new Error("Tried to save an incomplete segment stack.")
   }
 
+  const totalTimeFromAttempt = getCompletedStackTime(stack)
+
   return {
     queued: stack.queued,
     running: stack.running,
     completed: stack.completed.map(saveSegmentPersonalBest),
     pb: stack.pb
-      ? Math.min(stack.pb, getCompletedStackTime(stack))
-      : getCompletedStackTime(stack),
+      ? Math.min(stack.pb, totalTimeFromAttempt)
+      : totalTimeFromAttempt,
+    attempts: stack.attempts + 1,
+    average:
+      (stack.average * stack.attempts + totalTimeFromAttempt) /
+      (stack.attempts + 1),
   }
 }
 

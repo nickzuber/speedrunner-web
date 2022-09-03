@@ -23,6 +23,8 @@ export type Segment = QueuedSegment | RunningSegment | CompletedSegment
 
 export interface BaseSegmentStack {
   pb?: number
+  attempts: number
+  average: number
 }
 
 export interface QueuedSegmentStack extends BaseSegmentStack {

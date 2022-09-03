@@ -3,6 +3,7 @@ import React, {
   FC,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react"
 import { SegmentsContext } from "../contexts/segments"
@@ -19,8 +20,11 @@ interface ActionsProps {}
 
 export const Actions: FC<ActionsProps> = () => {
   const [idle, setIdle] = useState(false)
+  const timout = useRef<any>()
   const { stack, advanceStack, fullResetStack, resetStack, saveAndResetStack } =
     useContext(SegmentsContext)
+
+  useEffect(() => () => clearTimeout(timout.current), [])
 
   if (isCompletedSegmentStack(stack)) {
     return (
@@ -38,6 +42,15 @@ export const Actions: FC<ActionsProps> = () => {
           disabled={idle}
           onClick={() => {
             resetStack()
+            setIdle(true)
+            timout.current = setTimeout(() => setIdle(false), 3000)
+            const elem = document.querySelector(`#segment-0`)
+            console.info(elem)
+            if (elem) {
+              elem.scrollIntoView({
+                behavior: "smooth",
+              })
+            }
           }}
         >
           {"Discard"}
@@ -49,6 +62,14 @@ export const Actions: FC<ActionsProps> = () => {
           disabled={idle}
           onClick={() => {
             saveAndResetStack()
+            setIdle(true)
+            timout.current = setTimeout(() => setIdle(false), 3000)
+            const elem = document.querySelector(`#segment-0`)
+            if (elem) {
+              elem.scrollIntoView({
+                behavior: "smooth",
+              })
+            }
           }}
         >
           {"Save"}
@@ -67,7 +88,8 @@ export const Actions: FC<ActionsProps> = () => {
       >
         <button
           key="start"
-          className="action-idle-button"
+          className="action-button"
+          disabled={idle}
           onClick={() => {
             advanceStack()
           }}
@@ -93,7 +115,7 @@ export const Actions: FC<ActionsProps> = () => {
 
           if (stack.queued.length === 0) {
             setIdle(true)
-            setTimeout(() => setIdle(false), 3000)
+            timout.current = setTimeout(() => setIdle(false), 3000)
           }
         }}
       >

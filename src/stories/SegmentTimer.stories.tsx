@@ -22,7 +22,7 @@ const Template: ComponentStory<any> = ({
   return (
     <SegmentsProvider stackMock={stack}>
       <IPhoneContainer>
-        <SegmentTimer {...args} time={time} />
+        <SegmentTimer {...args} time={time} index={0} />
       </IPhoneContainer>
     </SegmentsProvider>
   )

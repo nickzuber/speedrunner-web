@@ -25,6 +25,8 @@ const getInitialStack = (): SegmentStack => ({
   running: null,
   completed: [],
   pb: parseStringForMs("31:39.11"),
+  attempts: 1,
+  average: parseStringForMs("31:39.11"),
 })
 
 export type SegmentsOptions = {
@@ -107,6 +109,8 @@ export function useSegments(): SegmentsOptions {
       queued: [],
       running: null,
       completed: [],
+      attempts: 0,
+      average: 0,
     })
   }
 

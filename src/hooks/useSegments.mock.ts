@@ -79,6 +79,8 @@ export function useSegmentsMock(initialStack?: SegmentStack): SegmentsOptions {
       queued: [],
       running: null,
       completed: [],
+      attempts: 0,
+      average: 0,
     })
   }
   return {
