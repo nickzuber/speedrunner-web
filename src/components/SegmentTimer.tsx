@@ -13,6 +13,7 @@ import {
   isCompletedSegment,
   isCompletedSegmentStack,
   isQueuedSegment,
+  isQueuedSegmentStack,
   isRunningSegment,
   isRunningSegmentStack,
 } from "../utils/segments"
@@ -59,8 +60,15 @@ const styles: Record<string, CSSProperties> = {
     display: "flex",
     flexDirection: "column",
     alignItems: "baseline",
+    zIndex: 1,
   },
-  right: { flex: 1, textAlign: "right", position: "absolute", right: 18 },
+  right: {
+    flex: 1,
+    textAlign: "right",
+    position: "absolute",
+    right: 18,
+    zIndex: 1,
+  },
   name: {
     display: "block",
     fontSize: 18,
@@ -93,6 +101,7 @@ const RunningSegmentTimer: FC<{ segment: RunningSegment; time: number }> = ({
   segment,
   time,
 }) => {
+  const { stack } = useContext(SegmentsContext)
   const split = time - segment.start
   const formattedTs = formatTimestamp(split)
   const [mins, ms] = formattedTs.split(".")
@@ -103,7 +112,14 @@ const RunningSegmentTimer: FC<{ segment: RunningSegment; time: number }> = ({
   const diffTs = shouldShowPbTimerBadge(segment, split)
 
   return (
-    <div style={{ ...styles.container, background: "#f6f8fa" }}>
+    <div style={styles.container}>
+      <div
+        className={
+          stack.completed.length === 0
+            ? "new-select-fadein"
+            : "new-select-slidedown"
+        }
+      />
       <div style={styles.left}>
         <span style={styles.name}>{segment.name}</span>
         <span style={styles.byline}>
@@ -115,7 +131,7 @@ const RunningSegmentTimer: FC<{ segment: RunningSegment; time: number }> = ({
           />
         </span>
       </div>
-      <div style={styles.right}>
+      <div style={styles.right} className="slide-in">
         {diffTs ? (
           <Badge
             color={getBadgeSplitColor(diffTs)}
@@ -138,10 +154,6 @@ const RunningSegmentTimer: FC<{ segment: RunningSegment; time: number }> = ({
 }
 
 const QueuedSegmentTimer: FC<{ segment: QueuedSegment }> = ({ segment }) => {
-  const [mins, ms] = ["--", "--"]
-
-  const numDigits = 1.6 // jank, forced padding
-  const numColons = 0
   return (
     <div style={styles.container}>
       <div style={styles.left}>
@@ -155,13 +167,8 @@ const QueuedSegmentTimer: FC<{ segment: QueuedSegment }> = ({ segment }) => {
           />
         </span>
       </div>
-      <div style={styles.right}>
-        <span
-          style={{ ...styles.minutes, width: 18 * numDigits + 6 * numColons }}
-        >
-          {mins}
-        </span>
-        <span style={styles.milliseconds}>{`.${ms}`}</span>
+      <div style={{ ...styles.right, color: "#f4f6f7" }}>
+        <span style={{ ...styles.minutes, width: 30 }}>{"—"}</span>
       </div>
     </div>
   )
@@ -200,6 +207,7 @@ const CompletedSegmentTimer: FC<{ segment: CompletedSegment }> = ({
             width={getBadgeSplitWidth(diffTs, false)}
             style={{ marginRight: 8 }}
             size={1}
+            fadeIn={diffTs <= -1000 * 90}
           />
         ) : null}
         <span

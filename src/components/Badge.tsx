@@ -13,15 +13,6 @@ export enum BadgeIcons {
   Up = "up",
 }
 
-export interface BadgeProps {
-  color: BadgeColors
-  icon: BadgeIcons
-  width?: number
-  time?: number
-  size?: number
-  style?: CSSProperties
-}
-
 const backgroundColors: Record<BadgeColors, string> = {
   [BadgeColors.Red]: "#FFCBCB",
   [BadgeColors.Green]: "#D0E7DB",
@@ -84,12 +75,23 @@ const badgeIcons: Record<BadgeIcons, React.ReactNode> = {
   ),
 }
 
+export interface BadgeProps {
+  color: BadgeColors
+  icon: BadgeIcons
+  width?: number
+  time?: number
+  size?: number
+  fadeIn?: boolean
+  style?: CSSProperties
+}
+
 export const Badge: FC<BadgeProps> = ({
   time,
   color,
   icon,
   width,
   size,
+  fadeIn,
   style,
 }) => {
   const formattedTs = time
@@ -104,6 +106,7 @@ export const Badge: FC<BadgeProps> = ({
 
   return (
     <div
+      className={fadeIn ? "fade-in" : undefined}
       style={{
         fontSize: 12,
         fontWeight: 500,

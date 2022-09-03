@@ -4,7 +4,7 @@ import { SegmentTimer } from "./components/SegmentTimer"
 import { Timer } from "./components/Timer"
 import { SegmentsContext } from "./contexts/segments"
 import { useTimer } from "./hooks/useTimer"
-import { isCompletedSegmentStack, notEmpty } from "./utils/segments"
+import { notEmpty } from "./utils/segments"
 
 const Segments: FC = () => {
   const { stack } = useContext(SegmentsContext)
