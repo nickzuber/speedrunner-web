@@ -10,12 +10,13 @@ import {
   SegmentStack,
 } from "../types/segments"
 
-export function createNewSegment(name: string): QueuedSegment {
+export function createNewSegment(name: string, pb?: number): QueuedSegment {
   return {
     id: uuidv4(),
     name,
     start: null,
     end: null,
+    pb,
   }
 }
 
@@ -98,7 +99,14 @@ export function notEmpty<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
 }
 
-export function fullResetStack(stack: SegmentStack): QueuedSegmentStack {
+export function fullResetStack(
+  stack: SegmentStack,
+  clearStorage = false
+): QueuedSegmentStack {
+  if (clearStorage) {
+    localStorage.clear()
+  }
+
   return {
     ...stack,
     queued: [
@@ -172,6 +180,15 @@ export function getTheoreticalBestTime(stack: SegmentStack): number {
   }
 
   return 0
+}
+
+export function saveAndResetStack(stack: SegmentStack): QueuedSegmentStack {
+  if (!isCompletedSegmentStack(stack)) {
+    throw new Error("Tried to save and reset an incomplete segment stack.")
+  }
+
+  const savedStack = saveStackPersonalBests(stack)
+  return resetStack(savedStack)
 }
 
 export function saveStackPersonalBests(

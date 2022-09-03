@@ -6,6 +6,7 @@ import {
   createNewSegment,
   fullResetStack,
   resetStack,
+  saveAndResetStack,
   saveStackPersonalBests,
 } from "../utils/segments"
 import { SegmentsOptions } from "./useSegments"
@@ -86,6 +87,7 @@ export function useSegmentsMock(initialStack?: SegmentStack): SegmentsOptions {
     fullResetStack: () => setStack(fullResetStack(stack)),
     resetStack: () => setStack(resetStack(stack)),
     saveSegments: () => setStack(saveStackPersonalBests(stack)),
+    saveAndResetStack: () => setStack(saveAndResetStack(stack)),
     updateSegment,
     moveSegment,
     addNewSegment,

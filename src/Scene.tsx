@@ -1,4 +1,5 @@
 import { FC, useContext } from "react"
+import { Actions } from "./components/Actions"
 import { SegmentTimer } from "./components/SegmentTimer"
 import { Timer } from "./components/Timer"
 import { SegmentsContext } from "./contexts/segments"
@@ -19,46 +20,53 @@ const Segments: FC = () => {
       {segments.map((segment) => (
         <SegmentTimer key={segment.id} time={time} segment={segment} />
       ))}
-      <div
-        style={{
-          background: "#E1E2E3",
-          height: 2,
-          borderRadius: 2,
-          margin: "10px 12px 4px",
-        }}
-      />
       <Timer time={time} />
     </>
   )
 }
 
 export const Scene: FC = () => {
-  const { stack, advanceStack, fullResetStack, resetStack, saveSegments } =
-    useContext(SegmentsContext)
+  const { fullResetStack } = useContext(SegmentsContext)
 
   return (
     <div
       style={{
-        display: "block",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        height: "100vh",
+        position: "relative",
       }}
     >
-      <button
+      <div
         style={{
-          width: "100%",
-          height: 200,
-          margin: "12px auto",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          height: "20vh",
+          overflow: "hidden",
+          background: "#f6f8fa77",
+          borderBottom: "1px solid #ebeef177",
+          padding: "0 24px",
         }}
-        onClick={advanceStack}
       >
-        complete segment
-      </button>
-      <button onClick={resetStack}>reset</button>
-      <button onClick={fullResetStack}>full reset</button>
-      {isCompletedSegmentStack(stack) ? (
-        <button onClick={saveSegments}>save pbs</button>
-      ) : null}
-
-      <Segments />
+        <button className="action-idle-button" onClick={() => fullResetStack()}>
+          {"Reset stats"}
+        </button>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-end",
+          height: "80vh",
+          overflow: "hidden",
+          paddingBottom: 38,
+        }}
+      >
+        <Segments />
+        <Actions />
+      </div>
     </div>
   )
 }

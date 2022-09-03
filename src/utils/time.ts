@@ -1,6 +1,8 @@
+import { BadgeColors, BadgeIcons } from "../components/Badge"
+
 export function formatTimestamp(ts: number): string {
   if (ts < 0) {
-    return "-"
+    return "-.-"
   }
 
   const seconds = ts / 1000
@@ -24,4 +26,38 @@ export function formatTimestamp(ts: number): string {
 
 export function formatSeconds(seconds: number): string {
   return `${(seconds % 60).toFixed(2)}`
+}
+
+export function getBadgeSplitColor(ts: number, pb?: number) {
+  // <=1:30
+  return ts <= -1000 * 90
+    ? BadgeColors.Gold
+    : ts < 0
+    ? BadgeColors.Green
+    : BadgeColors.Red
+}
+
+export function getBadgeSplitIcon(ts: number, pb?: number) {
+  // <=1:30
+  return ts < 0 ? BadgeIcons.Down : BadgeIcons.Up
+}
+
+export function getBadgeSplitWidth(ts: number, running?: boolean) {
+  return !running ? undefined : ts > 1000 * 60 * 10 ? 60 : 50
+}
+
+// "15:37.50" -> 937050
+export function parseStringForMs(str: string) {
+  const parts = str
+    .split(/(:|\.)/)
+    .filter((c) => c !== ":" && c !== ".")
+    .reverse()
+    .map(Number)
+  const multipliers = [1, 1000, 1000 * 60, 1000 * 60]
+  let ts = 0,
+    multiplierIndex = 0
+  for (const part of parts) {
+    ts += part * multipliers[multiplierIndex++]
+  }
+  return ts
 }

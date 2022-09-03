@@ -45,21 +45,21 @@ function withPbs<T extends SegmentStack>(stack: T): T {
 
 const queuedStack: SegmentStack = withPbs({
   queued: [
-    createNewSegment("(1) Get to the J"),
-    createNewSegment("(2) J arrives"),
-    createNewSegment("(3) Get to Canal"),
-    createNewSegment("(4) Elevator doors close"),
+    createNewSegment("Get to the J"),
+    createNewSegment("J arrives"),
+    createNewSegment("Get to the Canal Street subway stop"),
+    createNewSegment("Elevator doors close"),
   ],
   running: null,
   completed: [],
 })
 
 const runningStack: SegmentStack = withPbs({
-  queued: [createNewSegment("(4) Elevator doors close")],
-  running: createRunningSegment("(3) Get to Canal"),
+  queued: [createNewSegment("Elevator doors close")],
+  running: createRunningSegment("Get to the Canal Street subway stop"),
   completed: [
-    createCompletedSegment("(1) Get to the J"),
-    createCompletedSegment("(2) J arrives"),
+    createCompletedSegment("Get to the J"),
+    createCompletedSegment("J arrives"),
   ],
 })
 
@@ -67,10 +67,10 @@ const completedStack: SegmentStack = withPbs({
   queued: [],
   running: null,
   completed: [
-    createCompletedSegment("(1) Get to the J"),
-    createCompletedSegment("(2) J arrives"),
-    createCompletedSegment("(3) Get to Canal"),
-    createCompletedSegment("(4) Elevator doors close"),
+    createCompletedSegment("Get to the J"),
+    createCompletedSegment("J arrives"),
+    createCompletedSegment("Get to the Canal Street subway stop"),
+    createCompletedSegment("Elevator doors close"),
   ],
 })
 

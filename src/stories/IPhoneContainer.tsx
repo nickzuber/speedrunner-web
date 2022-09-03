@@ -8,10 +8,9 @@ export const IPhoneContainer: FC<IPhoneContainerProps> = ({ children }) => {
   return (
     <div
       style={{
-        width: 340,
-        background: "#EDECED",
+        width: 420,
+        background: "#fff",
         margin: "24px auto",
-        borderRadius: 8,
       }}
     >
       {children}

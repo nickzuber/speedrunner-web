@@ -1,4 +1,4 @@
-import React, { FC } from "react"
+import React, { CSSProperties, FC } from "react"
 import { formatTimestamp } from "../utils/time"
 
 export enum BadgeColors {
@@ -14,9 +14,12 @@ export enum BadgeIcons {
 }
 
 export interface BadgeProps {
-  time?: number
   color: BadgeColors
   icon: BadgeIcons
+  width?: number
+  time?: number
+  size?: number
+  style?: CSSProperties
 }
 
 const backgroundColors: Record<BadgeColors, string> = {
@@ -44,9 +47,9 @@ const badgeIcons: Record<BadgeIcons, React.ReactNode> = {
       <path
         d="M1 6.88V1L3.34483 4.08L5 1L6.65517 4.08L9 1V6.88C9 6.88 8.31034 8 5 8C1.68966 8 1 6.88 1 6.88Z"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   ),
@@ -81,10 +84,21 @@ const badgeIcons: Record<BadgeIcons, React.ReactNode> = {
   ),
 }
 
-export const Badge: FC<BadgeProps> = ({ time, color, icon }) => {
+export const Badge: FC<BadgeProps> = ({
+  time,
+  color,
+  icon,
+  width,
+  size,
+  style,
+}) => {
   const formattedTs = time
-    ? time >= 1000 * 60
+    ? time >= 1000 * 60 * 60
+      ? "Lots!"
+      : time >= 1000 * 60
       ? formatTimestamp(time).split(".")[0]
+      : time >= 1000 * 10
+      ? formatTimestamp(time).slice(0, -1)
       : formatTimestamp(time)
     : "--.--"
 
@@ -93,16 +107,17 @@ export const Badge: FC<BadgeProps> = ({ time, color, icon }) => {
       style={{
         fontSize: 12,
         fontWeight: 500,
-        width: "fit-content",
+        width: width || "fit-content",
         padding: "0px 4px",
         display: "inline-flex",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: width ? undefined : "center",
         boxSizing: "border-box",
         borderRadius: 4,
         background: backgroundColors[color],
         color: foregroundColors[color],
-        transform: "scale(0.85)",
+        transform: `scale(${size ? size : 0.85})`,
+        ...style,
       }}
     >
       {badgeIcons[icon]}

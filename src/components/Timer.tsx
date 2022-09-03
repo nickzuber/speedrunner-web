@@ -40,6 +40,11 @@ export const Timer: FC<TimerProps> = ({ time }) => {
         justifyContent: "space-between",
         width: "100%",
         boxSizing: "border-box",
+        marginTop: 24,
+        // marginTop: 12,
+        // background: "#f6f8fa",
+        // borderTop: "1px solid #ebeef1",
+        // borderBottom: "1px solid #ebeef1",
       }}
     >
       <div

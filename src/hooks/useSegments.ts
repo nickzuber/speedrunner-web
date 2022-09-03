@@ -6,23 +6,26 @@ import {
   createNewSegment,
   fullResetStack,
   resetStack,
+  saveAndResetStack,
   saveStackPersonalBests,
 } from "../utils/segments"
+import { parseStringForMs } from "../utils/time"
 
 const useSegmentStackState = createState<SegmentStack>(PersistedState.Stack)
 
 // @TODO(nickz) hard-coded, will delete later
-const initialSegments: Array<QueuedSegment> = [
-  createNewSegment("Jaunt to the Jay"),
-  createNewSegment("Jay takes me away"),
-  createNewSegment("Swim in the Canal"),
-  createNewSegment("Enter the elevator"),
+const getInitialSegments = (): Array<QueuedSegment> => [
+  createNewSegment("Subway platform", parseStringForMs("6:34.11")),
+  createNewSegment("Doors open", parseStringForMs("0.38")),
+  createNewSegment("Exit subway", parseStringForMs("15:37.50")),
+  createNewSegment("Enter the elevator", parseStringForMs("8:39.14")),
 ]
-const initialStack: SegmentStack = {
-  queued: initialSegments,
+const getInitialStack = (): SegmentStack => ({
+  queued: getInitialSegments(),
   running: null,
   completed: [],
-}
+  pb: parseStringForMs("31:39.11"),
+})
 
 export type SegmentsOptions = {
   stack: SegmentStack
@@ -35,10 +38,11 @@ export type SegmentsOptions = {
   deleteSegment: (id: string) => void
   clearSegments: () => void
   saveSegments: () => void
+  saveAndResetStack: () => void
 }
 
 export function useSegments(): SegmentsOptions {
-  const [stack, setStack] = useSegmentStackState(initialStack)
+  const [stack, setStack] = useSegmentStackState(getInitialStack())
 
   function updateSegment(id: string, newName: string) {
     const initialStack = resetStack(stack)
@@ -109,9 +113,10 @@ export function useSegments(): SegmentsOptions {
   return {
     stack,
     advanceStack,
-    fullResetStack: () => setStack(fullResetStack(stack)),
+    fullResetStack: () => setStack(getInitialStack()),
     resetStack: () => setStack(resetStack(stack)),
     saveSegments: () => setStack(saveStackPersonalBests(stack)),
+    saveAndResetStack: () => setStack(saveAndResetStack(stack)),
     updateSegment,
     moveSegment,
     addNewSegment,
