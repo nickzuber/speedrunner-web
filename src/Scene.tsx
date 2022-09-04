@@ -51,7 +51,7 @@ export const Scene: FC = () => {
   }, [stack, isScrollable])
 
   // Measured in `vh`
-  const topHeight = 30
+  const topHeight = 25
 
   return (
     <div
@@ -77,97 +77,12 @@ export const Scene: FC = () => {
           padding: "0 24px 28px",
         }}
       >
-        <svg
-          width="104"
-          height="104"
-          viewBox="0 0 104 104"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g filter="url(#filter0_d_25_286)">
-            <circle cx="52" cy="50" r="44" fill="white" />
-            <circle cx="52" cy="50" r="20" fill="#FF1A44" />
-            <line
-              x1="52"
-              y1="41"
-              x2="52"
-              y2="51"
-              stroke="white"
-              stroke-width="6"
-              stroke-linecap="round"
-            />
-            <line
-              x1="52"
-              y1="41"
-              x2="52"
-              y2="51"
-              stroke="white"
-              stroke-width="6"
-              stroke-linecap="round"
-            />
-            <line
-              x1="57.9298"
-              y1="54.1971"
-              x2="52.1972"
-              y2="51.0702"
-              stroke="white"
-              stroke-width="6"
-              stroke-linecap="round"
-            />
-            <line
-              x1="57.9298"
-              y1="54.1971"
-              x2="52.1972"
-              y2="51.0702"
-              stroke="white"
-              stroke-width="6"
-              stroke-linecap="round"
-            />
-          </g>
-          <defs>
-            <filter
-              id="filter0_d_25_286"
-              x="0"
-              y="0"
-              width="104"
-              height="104"
-              filterUnits="userSpaceOnUse"
-              color-interpolation-filters="sRGB"
-            >
-              <feFlood flood-opacity="0" result="BackgroundImageFix" />
-              <feColorMatrix
-                in="SourceAlpha"
-                type="matrix"
-                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                result="hardAlpha"
-              />
-              <feOffset dy="2" />
-              <feGaussianBlur stdDeviation="4" />
-              <feComposite in2="hardAlpha" operator="out" />
-              <feColorMatrix
-                type="matrix"
-                values="0 0 0 0 0.254167 0 0 0 0 0.254167 0 0 0 0 0.254167 0 0 0 0.17 0"
-              />
-              <feBlend
-                mode="normal"
-                in2="BackgroundImageFix"
-                result="effect1_dropShadow_25_286"
-              />
-              <feBlend
-                mode="normal"
-                in="SourceGraphic"
-                in2="effect1_dropShadow_25_286"
-                result="shape"
-              />
-            </filter>
-          </defs>
-        </svg>
         <span
           style={{
             textTransform: "uppercase",
-            fontWeight: 600,
-            letterSpacing: -0.25,
-            fontSize: 20,
+            fontWeight: 700,
+            letterSpacing: -0.35,
+            fontSize: 22,
             color: "#ffffff",
             marginTop: 8,
           }}
@@ -193,7 +108,17 @@ export const Scene: FC = () => {
             {formatTimestamp(stack.average).split(".")[0]}
           </span>
         </span>
-        <button onClick={() => fullResetStack()}>{"Reset stats"}</button>
+        <span
+          style={{
+            fontWeight: 500,
+            fontSize: 14,
+            color: "#FFA7B8",
+            marginTop: 4,
+          }}
+          onClick={() => fullResetStack()}
+        >
+          {"Reset stats"}
+        </span>
         <div
           style={{
             background: "#ffffff",
@@ -226,7 +151,8 @@ export const Scene: FC = () => {
           position: "relative",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "flex-end",
+          // justifyContent: "flex-end",
+          justifyContent: "space-between",
           height: `${100 - topHeight}vh`,
           overflow: "hidden",
           paddingBottom: 30,
@@ -253,7 +179,7 @@ export const Scene: FC = () => {
             isScrollable
               ? {
                   boxShadow: "0px -5px 6px 0px #e7e7e736",
-                  marginTop: 18,
+                  paddingTop: 12,
                 }
               : undefined
           }

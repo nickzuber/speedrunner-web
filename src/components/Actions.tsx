@@ -1,27 +1,40 @@
-import React, {
-  CSSProperties,
-  FC,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react"
+import React, { FC, useContext, useEffect, useRef, useState } from "react"
 import { SegmentsContext } from "../contexts/segments"
 import {
   isCompletedSegmentStack,
-  isQueuedSegment,
   isQueuedSegmentStack,
-  isRunningSegment,
-  isRunningSegmentStack,
 } from "../utils/segments"
-import { formatTimestamp } from "../utils/time"
 
 interface ActionsProps {}
+
+function scrollToTopOfSegments() {
+  const elem = document.querySelector(`#segment-0`)
+  if (elem) {
+    elem.scrollIntoView({
+      behavior: "smooth",
+    })
+  }
+}
+
+const RenderWithDisabled: FC<{
+  render: (disabled: boolean) => React.ReactNode
+  duration?: number
+}> = ({ render, duration }) => {
+  const timout = useRef<any>()
+  const [disabled, setDisabled] = useState(true)
+
+  useEffect(() => {
+    timout.current = setTimeout(() => setDisabled(false), duration || 3000)
+    return () => clearTimeout(timout.current)
+  }, [])
+
+  return <>{render(disabled)}</>
+}
 
 export const Actions: FC<ActionsProps> = () => {
   const [idle, setIdle] = useState(false)
   const timout = useRef<any>()
-  const { stack, advanceStack, fullResetStack, resetStack, saveAndResetStack } =
+  const { stack, advanceStack, resetStack, saveAndResetStack } =
     useContext(SegmentsContext)
 
   useEffect(() => () => clearTimeout(timout.current), [])
@@ -30,50 +43,49 @@ export const Actions: FC<ActionsProps> = () => {
     return (
       <div
         style={{
-          margin: "24px auto 0",
+          margin: "6px auto 0",
           width: "calc(100% - 48px)",
           display: "flex",
           flexDirection: "row",
         }}
       >
-        <button
-          key="discard"
-          className="action-idle-button"
-          disabled={idle}
-          onClick={() => {
-            resetStack()
-            setIdle(true)
-            timout.current = setTimeout(() => setIdle(false), 3000)
-            const elem = document.querySelector(`#segment-0`)
-            console.info(elem)
-            if (elem) {
-              elem.scrollIntoView({
-                behavior: "smooth",
-              })
-            }
-          }}
-        >
-          {"Discard"}
-        </button>
+        <RenderWithDisabled
+          render={(disabled) => (
+            <button
+              key="discard"
+              disabled={disabled}
+              className="action-idle-button"
+              onClick={() => {
+                setIdle(true)
+                timout.current = setTimeout(() => setIdle(false), 3000)
+
+                resetStack()
+                scrollToTopOfSegments()
+              }}
+            >
+              {"Discard"}
+            </button>
+          )}
+        />
         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        <button
-          key="save"
-          className="action-button"
-          disabled={idle}
-          onClick={() => {
-            saveAndResetStack()
-            setIdle(true)
-            timout.current = setTimeout(() => setIdle(false), 3000)
-            const elem = document.querySelector(`#segment-0`)
-            if (elem) {
-              elem.scrollIntoView({
-                behavior: "smooth",
-              })
-            }
-          }}
-        >
-          {"Save"}
-        </button>
+        <RenderWithDisabled
+          render={(disabled) => (
+            <button
+              key="save"
+              disabled={disabled}
+              className="action-button"
+              onClick={() => {
+                setIdle(true)
+                timout.current = setTimeout(() => setIdle(false), 3000)
+
+                saveAndResetStack()
+                scrollToTopOfSegments()
+              }}
+            >
+              {"Save"}
+            </button>
+          )}
+        />
       </div>
     )
   }
@@ -82,7 +94,7 @@ export const Actions: FC<ActionsProps> = () => {
     return (
       <div
         style={{
-          margin: "24px auto 0",
+          margin: "6px auto 0",
           width: "calc(100% - 48px)",
         }}
       >
@@ -103,7 +115,7 @@ export const Actions: FC<ActionsProps> = () => {
   return (
     <div
       style={{
-        margin: "24px auto 0",
+        margin: "6px auto 0",
         width: "calc(100% - 48px)",
       }}
     >
@@ -112,11 +124,6 @@ export const Actions: FC<ActionsProps> = () => {
         className="action-button"
         onClick={() => {
           advanceStack()
-
-          if (stack.queued.length === 0) {
-            setIdle(true)
-            timout.current = setTimeout(() => setIdle(false), 3000)
-          }
         }}
       >
         {stack.queued.length === 0 ? "Finish" : "Next →"}
