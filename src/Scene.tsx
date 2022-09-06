@@ -10,7 +10,7 @@ import {
   isRunningSegmentStack,
   notEmpty,
 } from "./utils/segments"
-import { formatTimestamp } from "./utils/time"
+import { formatDateMs, formatTimestamp } from "./utils/time"
 
 const Segments: FC<{ time: number }> = ({ time }) => {
   const { stack } = useContext(SegmentsContext)
@@ -56,7 +56,7 @@ export const Scene: FC = () => {
   }, [stack, isScrollable])
 
   // Measured in `vh`
-  const topHeight = 37
+  const topHeight = 36
 
   return (
     <div
@@ -157,14 +157,10 @@ export const Scene: FC = () => {
             }}
           >
             {isRunningSegmentStack(stack)
-              ? new Date(
-                  Date.now() + getEstimatedTimeLeft(stack)
-                ).toLocaleTimeString()
+              ? formatDateMs(Date.now() + getEstimatedTimeLeft(stack))
               : isCompletedSegmentStack(stack)
-              ? new Date(
-                  stack.completed[stack.completed.length - 1].end
-                ).toLocaleTimeString()
-              : null}
+              ? formatDateMs(stack.completed[stack.completed.length - 1].end)
+              : formatDateMs(Date.now() + (stack.pb || 0))}
           </span>
         </span>
         <span

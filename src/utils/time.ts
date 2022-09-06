@@ -61,3 +61,16 @@ export function parseStringForMs(str: string) {
   }
   return ts
 }
+
+export function formatDateMs(epochTs: number): string {
+  const date = new Date(epochTs).toLocaleTimeString()
+  const [time, z] = date.split(" ")
+  const [hrs, mins, ms] = time.split(":")
+  return `${hrs}:${mins} ${z}`
+}
+export function getDateMs(epochTs: number): number {
+  const date = new Date(epochTs).toLocaleTimeString()
+  const [time, z] = date.split(" ")
+  const [hrs, mins, ms] = time.split(":")
+  return Number(ms)
+}

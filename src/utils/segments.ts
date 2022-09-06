@@ -292,7 +292,7 @@ export function completeRunningSegment(stack: SegmentStack) {
   return stack
 }
 
-export function getTotalTimeRanSoFar(stack: RunningSegmentStack) {
+export function getTotalTimeRanSoFar(stack: CompletedSegmentStack) {
   return Date.now() - stack.completed[0].start
 }
 
