@@ -1,4 +1,11 @@
-import React, { FC, useContext, useEffect, useRef, useState } from "react"
+import React, {
+  CSSProperties,
+  FC,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { SegmentsContext } from "../contexts/segments"
 import {
   isCompletedSegmentStack,
@@ -31,6 +38,15 @@ const RenderWithDisabled: FC<{
   return <>{render(disabled)}</>
 }
 
+const styles: Record<string, CSSProperties> = {
+  container: {
+    margin: "14px auto 0",
+    width: "calc(100% - 48px)",
+    display: "flex",
+    flexDirection: "row",
+  },
+}
+
 export const Actions: FC<ActionsProps> = () => {
   const [idle, setIdle] = useState(false)
   const timout = useRef<any>()
@@ -41,14 +57,7 @@ export const Actions: FC<ActionsProps> = () => {
 
   if (isCompletedSegmentStack(stack)) {
     return (
-      <div
-        style={{
-          margin: "6px auto 0",
-          width: "calc(100% - 48px)",
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
+      <div style={styles.container}>
         <RenderWithDisabled
           render={(disabled) => (
             <button
@@ -92,12 +101,7 @@ export const Actions: FC<ActionsProps> = () => {
 
   if (isQueuedSegmentStack(stack)) {
     return (
-      <div
-        style={{
-          margin: "6px auto 0",
-          width: "calc(100% - 48px)",
-        }}
-      >
+      <div style={styles.container}>
         <button
           key="start"
           className="action-button"
@@ -113,12 +117,7 @@ export const Actions: FC<ActionsProps> = () => {
   }
 
   return (
-    <div
-      style={{
-        margin: "6px auto 0",
-        width: "calc(100% - 48px)",
-      }}
-    >
+    <div style={styles.container}>
       <button
         key={stack.queued.length === 0 ? "finish" : "next"}
         className="action-button"

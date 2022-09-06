@@ -15,7 +15,7 @@ export enum BadgeIcons {
 
 const backgroundColors: Record<BadgeColors, string> = {
   [BadgeColors.Red]: "#ff1a44",
-  [BadgeColors.Green]: "#37b24d",
+  [BadgeColors.Green]: "#29B227",
   [BadgeColors.Gold]: "#fab005",
 }
 
@@ -110,17 +110,21 @@ export const Badge: FC<BadgeProps> = ({
       style={{
         fontSize: 12,
         fontWeight: 600,
-        width: width || "fit-content",
+        // width: width || "fit-content",
         padding: "1px 6px",
         display: "inline-flex",
         alignItems: "center",
-        justifyContent: width ? undefined : "center",
+        // justifyContent: width ? undefined : "center",
         boxSizing: "border-box",
         borderRadius: 4,
         background: backgroundColors[color],
         color: foregroundColors[color],
-        transform: `scale(${size ? size : 0.85})`,
+        transform: `scale(${size ? size : 0.9})`,
+        // fontFamily: "Azeret Mono, monospace",
+        // letterSpacing: -0.5,
         ...style,
+        width: 60,
+        justifyContent: "center",
       }}
     >
       {badgeIcons[icon]}

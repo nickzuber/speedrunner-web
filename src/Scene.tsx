@@ -4,7 +4,12 @@ import { SegmentTimer } from "./components/SegmentTimer"
 import { Timer } from "./components/Timer"
 import { SegmentsContext } from "./contexts/segments"
 import { useTimer } from "./hooks/useTimer"
-import { notEmpty } from "./utils/segments"
+import {
+  getEstimatedTimeLeft,
+  isCompletedSegmentStack,
+  isRunningSegmentStack,
+  notEmpty,
+} from "./utils/segments"
 import { formatTimestamp } from "./utils/time"
 
 const Segments: FC<{ time: number }> = ({ time }) => {
@@ -51,7 +56,7 @@ export const Scene: FC = () => {
   }, [stack, isScrollable])
 
   // Measured in `vh`
-  const topHeight = 25
+  const topHeight = 37
 
   return (
     <div
@@ -64,6 +69,34 @@ export const Scene: FC = () => {
         overflow: "hidden",
       }}
     >
+      {/* ====== */}
+      <div
+        style={{
+          backdropFilter: "blur(1px) contrast(70%)",
+          WebkitBackdropFilter: "blur(1px) contrast(70%)",
+          height: 22,
+          width: 65,
+          borderRadius: 6,
+          position: "absolute",
+          zIndex: 999,
+          top: 16,
+          left: 10,
+        }}
+      />
+      <div
+        style={{
+          backdropFilter: "blur(1px) contrast(70%)",
+          WebkitBackdropFilter: "blur(1px) contrast(70%)",
+          height: 22,
+          width: 74,
+          borderRadius: 6,
+          position: "absolute",
+          zIndex: 999,
+          top: 16,
+          right: 8,
+        }}
+      />
+      {/* ====== */}
       <div
         style={{
           position: "relative",
@@ -73,28 +106,23 @@ export const Scene: FC = () => {
           alignItems: "center",
           height: `${topHeight}vh`,
           overflowY: "visible",
-          background: "#ff1a44",
           padding: "0 24px 28px",
+          backgroundColor: "#ffffff",
+          background: "url(map.png)",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
         }}
       >
         <span
           style={{
-            textTransform: "uppercase",
-            fontWeight: 700,
-            letterSpacing: -0.35,
-            fontSize: 22,
-            color: "#ffffff",
-            marginTop: 8,
-          }}
-        >
-          {"Daily commute"}
-        </span>
-        <span
-          style={{
             fontWeight: 500,
             fontSize: 16,
-            color: "#FFA7B8",
             marginTop: 4,
+            color: "#ffffffdd",
+            backdropFilter: "blur(1px) contrast(50%)",
+            WebkitBackdropFilter: "blur(1px) contrast(50%)",
+            padding: "4px 12px",
+            borderRadius: 4,
           }}
         >
           {"Average time"}
@@ -111,8 +139,43 @@ export const Scene: FC = () => {
         <span
           style={{
             fontWeight: 500,
+            fontSize: 16,
+            marginTop: 4,
+            color: "#ffffffdd",
+            backdropFilter: "blur(1px) contrast(50%)",
+            WebkitBackdropFilter: "blur(1px) contrast(50%)",
+            padding: "4px 12px",
+            borderRadius: 4,
+          }}
+        >
+          {"Pace"}
+          <span
+            style={{
+              fontWeight: 600,
+              color: "#ffffff",
+              marginLeft: 6,
+            }}
+          >
+            {isRunningSegmentStack(stack)
+              ? new Date(
+                  Date.now() + getEstimatedTimeLeft(stack)
+                ).toLocaleTimeString()
+              : isCompletedSegmentStack(stack)
+              ? new Date(
+                  stack.completed[stack.completed.length - 1].end
+                ).toLocaleTimeString()
+              : null}
+          </span>
+        </span>
+        <span
+          style={{
+            fontWeight: 500,
             fontSize: 14,
-            color: "#FFA7B8",
+            color: "#ffffffdd",
+            backdropFilter: "blur(1px) contrast(50%)",
+            WebkitBackdropFilter: "blur(1px) contrast(50%)",
+            padding: "4px 12px",
+            borderRadius: 4,
             marginTop: 4,
           }}
           onClick={() => fullResetStack()}
@@ -123,28 +186,19 @@ export const Scene: FC = () => {
           style={{
             background: "#ffffff",
             position: "absolute",
-            height: 30,
+            height: 15,
             zIndex: 2,
             bottom: -2, // Help seal edge with some overlap.
-            left: -1,
-            right: -1,
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
+            left: 0,
+            right: 0,
+            borderTopLeftRadius: 12,
+            borderTopRightRadius: 12,
             boxShadow: "0px -8px 6px 0px #0d0d0d10",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
-        >
-          <div
-            style={{
-              background: "#f6f8fa",
-              height: 4,
-              width: 40,
-              borderRadius: 20,
-            }}
-          />
-        </div>
+        ></div>
       </div>
       <div
         style={{
@@ -155,7 +209,7 @@ export const Scene: FC = () => {
           justifyContent: "space-between",
           height: `${100 - topHeight}vh`,
           overflow: "hidden",
-          paddingBottom: 30,
+          paddingBottom: 36,
         }}
       >
         <div

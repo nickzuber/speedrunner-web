@@ -100,7 +100,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
         </span>
       </div>
       <div
-        style={{ flex: 1, textAlign: "right", position: "absolute", right: 18 }}
+        style={{ flex: 1, textAlign: "right", position: "absolute", right: 34 }}
       >
         <span
           style={{

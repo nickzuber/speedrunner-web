@@ -47,7 +47,7 @@ const styles: Record<string, CSSProperties> = {
     position: "relative",
     fontSize: 28,
     fontWeight: 500,
-    padding: "14px 18px",
+    padding: "10px 18px",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -71,7 +71,7 @@ const styles: Record<string, CSSProperties> = {
   },
   name: {
     display: "block",
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: "20px",
     fontWeight: 500,
     width: "50%",
@@ -83,6 +83,10 @@ const styles: Record<string, CSSProperties> = {
     fontWeight: 400,
     lineHeight: "18px",
     color: "#00000077",
+  },
+  bylineTextWrapper: {
+    display: "inline-block",
+    width: 65,
   },
   minutes: {
     display: "inline-block",
@@ -133,7 +137,7 @@ const RunningSegmentTimer: FC<{
       <div style={styles.left}>
         <span style={styles.name}>{segment.name}</span>
         <span style={styles.byline}>
-          {"Best split"}
+          <span style={styles.bylineTextWrapper}>{"Best split"}</span>
           <Badge
             time={segment.pb}
             color={BadgeColors.Green}
@@ -172,7 +176,7 @@ const QueuedSegmentTimer: FC<{ segment: QueuedSegment; index: number }> = ({
       <div style={styles.left}>
         <span style={styles.name}>{segment.name}</span>
         <span style={styles.byline}>
-          {"Best split"}
+          <span style={styles.bylineTextWrapper}>{"Best split"}</span>
           <Badge
             time={segment.pb}
             color={BadgeColors.Green}
@@ -202,7 +206,7 @@ const CompletedSegmentTimer: FC<{ segment: CompletedSegment; index: number }> =
         <div style={styles.left}>
           <span style={styles.name}>{segment.name}</span>
           <span style={styles.byline}>
-            {"Best split"}
+            <span style={styles.bylineTextWrapper}>{"Best split"}</span>
             <Badge
               time={segment.pb ? Math.min(segment.pb, split) : split}
               color={BadgeColors.Green}

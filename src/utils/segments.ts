@@ -291,3 +291,19 @@ export function completeRunningSegment(stack: SegmentStack) {
   // TODO(nickz) Should we throw an error?
   return stack
 }
+
+export function getTotalTimeRanSoFar(stack: RunningSegmentStack) {
+  return Date.now() - stack.completed[0].start
+}
+
+// @TODO Doesn't work if there are no PBs really.
+export function getEstimatedTimeLeft(stack: RunningSegmentStack) {
+  const segmentsToGo = stack.queued.reduce(
+    (sum, segment) => sum + (segment.pb || 0),
+    0
+  )
+  const timeLeftInRunningSegment =
+    (stack.running.pb || 0) - (Date.now() - stack.running.start)
+
+  return segmentsToGo + timeLeftInRunningSegment
+}
