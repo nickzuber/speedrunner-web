@@ -6,13 +6,18 @@ import React, {
   useRef,
   useState,
 } from "react"
+import { PersistedState } from "../constants/persisted"
 import { SegmentsContext } from "../contexts/segments"
+import { CompletedSegmentStack } from "../types/segments"
+import { createState } from "../utils/persisted"
 import {
   isCompletedSegmentStack,
   isQueuedSegmentStack,
 } from "../utils/segments"
 
-interface ActionsProps {}
+const useSavedStack = createState<CompletedSegmentStack | null>(
+  PersistedState.StackSaved
+)
 
 function scrollToTopOfSegments() {
   const elem = document.querySelector(`#segment-0`)
@@ -35,6 +40,10 @@ const RenderWithDisabled: FC<{
     return () => clearTimeout(timout.current)
   }, [])
 
+  useEffect(() => {
+    return () => setDisabled(true)
+  }, [])
+
   return <>{render(disabled)}</>
 }
 
@@ -47,7 +56,8 @@ const styles: Record<string, CSSProperties> = {
   },
 }
 
-export const Actions: FC<ActionsProps> = () => {
+export const Actions: FC = () => {
+  const [savedStack, setSavedStack] = useSavedStack(null)
   const [idle, setIdle] = useState(false)
   const timout = useRef<any>()
   const { stack, advanceStack, resetStack, saveAndResetStack } =
@@ -56,9 +66,39 @@ export const Actions: FC<ActionsProps> = () => {
   useEffect(() => () => clearTimeout(timout.current), [])
 
   if (isCompletedSegmentStack(stack)) {
+    if (savedStack) {
+      return (
+        <>
+          <div style={styles.container}>
+            <RenderWithDisabled
+              key="reset"
+              render={(disabled) => (
+                <button
+                  key="reset"
+                  disabled={disabled}
+                  className="action-idle-button"
+                  onClick={() => {
+                    setIdle(true)
+                    timout.current = setTimeout(() => setIdle(false), 3000)
+
+                    setSavedStack(null)
+                    saveAndResetStack()
+                    scrollToTopOfSegments()
+                  }}
+                >
+                  {"Clear"}
+                </button>
+              )}
+            />
+          </div>
+        </>
+      )
+    }
+
     return (
       <div style={styles.container}>
         <RenderWithDisabled
+          key="discard"
           render={(disabled) => (
             <button
               key="discard"
@@ -78,16 +118,14 @@ export const Actions: FC<ActionsProps> = () => {
         />
         &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
         <RenderWithDisabled
+          key="save"
           render={(disabled) => (
             <button
               key="save"
               disabled={disabled}
               className="action-button"
               onClick={() => {
-                setIdle(true)
-                timout.current = setTimeout(() => setIdle(false), 3000)
-
-                saveAndResetStack()
+                setSavedStack(stack)
                 scrollToTopOfSegments()
               }}
             >

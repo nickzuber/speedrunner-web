@@ -55,24 +55,24 @@ body {
   font-size: 18px;
   font-weight: 600;
   color: #030303;
-  border: 2px solid #f6f8fa;
+  border: 2px solid #ebeef1;
   transition: 100ms all ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
 .action-idle-button:active {
-  background: #f6f8fa;
+  background: #ebeef1;
   transform: scale(0.98);
 }
 
 .action-idle-button:disabled {
-  background: #f6f8fa;
+  background: #ebeef1;
   color: #03030366;
 }
 
 .action-idle-button:active:disabled {
-  background: #f6f8fa;
+  background: #ebeef1;
   color: #03030366;
   transform: scale(1);
 }

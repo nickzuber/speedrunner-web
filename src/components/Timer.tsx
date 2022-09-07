@@ -34,18 +34,16 @@ export const Timer: FC<TimerProps> = ({ time }) => {
         position: "relative",
         fontSize: 28,
         fontWeight: 500,
-        padding: "12px 18px",
-        margin: "4px 8px",
+        padding: "16px 24px",
+        margin: "0px 0px 4px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
         boxSizing: "border-box",
-        marginTop: 0,
-        // marginTop: 12,
-        // background: "#f6f8fa",
-        // borderTop: "1px solid #ebeef1",
-        // borderBottom: "1px solid #ebeef1",
+        background: "#f6f8fa",
+        borderTop: "1px solid #ebeef1",
+        borderBottom: "1px solid #ebeef1",
       }}
     >
       <div
@@ -62,6 +60,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
             fontSize: 18,
             lineHeight: "24px",
             fontWeight: 500,
+            marginBottom: 4,
           }}
         >
           {"Total"}
@@ -73,12 +72,13 @@ export const Timer: FC<TimerProps> = ({ time }) => {
             fontWeight: 400,
             lineHeight: "18px",
             color: "#00000077",
+            marginBottom: -4,
           }}
         >
           {"Personal best"}
           <Badge
             time={stack.pb}
-            color={BadgeColors.Green}
+            color={BadgeColors.Default}
             icon={BadgeIcons.Crown}
           />
         </span>
@@ -94,8 +94,8 @@ export const Timer: FC<TimerProps> = ({ time }) => {
           {"Theoretical best"}
           <Badge
             time={getTheoreticalBestTime(stack)}
-            color={BadgeColors.Gold}
-            icon={BadgeIcons.Crown}
+            color={BadgeColors.Default}
+            icon={BadgeIcons.Zap}
           />
         </span>
       </div>

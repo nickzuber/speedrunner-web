@@ -5,6 +5,8 @@ import { Timer } from "./components/Timer"
 import { SegmentsContext } from "./contexts/segments"
 import { useTimer } from "./hooks/useTimer"
 import {
+  getCompletedStackTime,
+  getEstimatedPace,
   getEstimatedTimeLeft,
   isCompletedSegmentStack,
   isRunningSegmentStack,
@@ -40,6 +42,7 @@ export const Scene: FC = () => {
   const time = useTimer(isSomeSegmentRunning)
 
   // Avoid safair scrollable behavior if there's nothing to scroll.
+  // TODO use refs to avoid layout calc before render
   useEffect(() => {
     const containerElem = document.querySelector(
       "#scrollable-segments"
@@ -56,7 +59,7 @@ export const Scene: FC = () => {
   }, [stack, isScrollable])
 
   // Measured in `vh`
-  const topHeight = 36
+  const topHeight = 33
 
   return (
     <div
@@ -113,57 +116,91 @@ export const Scene: FC = () => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <span
+        <div
           style={{
-            fontWeight: 500,
-            fontSize: 16,
-            marginTop: 4,
-            color: "#ffffffdd",
             backdropFilter: "blur(1px) contrast(50%)",
             WebkitBackdropFilter: "blur(1px) contrast(50%)",
-            padding: "4px 12px",
-            borderRadius: 4,
+            padding: "12px 16px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            borderRadius: "3px",
+            width: 175,
+            marginTop: 50,
           }}
         >
-          {"Average time"}
           <span
             style={{
-              fontWeight: 600,
-              color: "#ffffff",
-              marginLeft: 6,
+              fontWeight: 500,
+              fontSize: 16,
+              color: "#ffffffdd",
+              display: "flex",
+              justifyContent: "space-between",
             }}
           >
-            {formatTimestamp(stack.average).split(".")[0]}
+            {"Average"}
+            <span
+              style={{
+                fontWeight: 600,
+                color: "#ffffff",
+                marginLeft: 6,
+              }}
+            >
+              {formatTimestamp(stack.average).split(".")[0]}
+            </span>
           </span>
-        </span>
-        <span
-          style={{
-            fontWeight: 500,
-            fontSize: 16,
-            marginTop: 4,
-            color: "#ffffffdd",
-            backdropFilter: "blur(1px) contrast(50%)",
-            WebkitBackdropFilter: "blur(1px) contrast(50%)",
-            padding: "4px 12px",
-            borderRadius: 4,
-          }}
-        >
-          {"Pace"}
           <span
             style={{
-              fontWeight: 600,
-              color: "#ffffff",
-              marginLeft: 6,
+              fontWeight: 500,
+              fontSize: 16,
+              marginTop: 4,
+              color: "#ffffffdd",
+              display: "flex",
+              justifyContent: "space-between",
             }}
           >
-            {isRunningSegmentStack(stack)
-              ? formatDateMs(Date.now() + getEstimatedTimeLeft(stack))
-              : isCompletedSegmentStack(stack)
-              ? formatDateMs(stack.completed[stack.completed.length - 1].end)
-              : formatDateMs(Date.now() + (stack.pb || 0))}
+            {"Pace"}
+            <span
+              style={{
+                fontWeight: 600,
+                color: "#ffffff",
+                marginLeft: 6,
+              }}
+            >
+              {isRunningSegmentStack(stack)
+                ? formatTimestamp(getEstimatedPace(stack)).split(".")[0]
+                : isCompletedSegmentStack(stack)
+                ? formatTimestamp(getCompletedStackTime(stack))
+                : "—"}
+            </span>
           </span>
-        </span>
-        <span
+          <span
+            style={{
+              fontWeight: 500,
+              fontSize: 16,
+              marginTop: 4,
+              color: "#ffffffdd",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            {"Arrival"}
+            <span
+              style={{
+                fontWeight: 600,
+                color: "#ffffff",
+                marginLeft: 6,
+              }}
+            >
+              {isRunningSegmentStack(stack)
+                ? formatDateMs(Date.now() + getEstimatedTimeLeft(stack))
+                : isCompletedSegmentStack(stack)
+                ? formatDateMs(stack.completed[stack.completed.length - 1].end)
+                : formatDateMs(Date.now() + stack.average)}
+            </span>
+          </span>
+        </div>
+        {/* <span
           style={{
             fontWeight: 500,
             fontSize: 14,
@@ -177,7 +214,7 @@ export const Scene: FC = () => {
           onClick={() => fullResetStack()}
         >
           {"Reset stats"}
-        </span>
+        </span> */}
         <div
           style={{
             background: "#ffffff",
@@ -205,7 +242,6 @@ export const Scene: FC = () => {
           justifyContent: "space-between",
           height: `${100 - topHeight}vh`,
           overflow: "hidden",
-          paddingBottom: 36,
         }}
       >
         <div
@@ -230,8 +266,13 @@ export const Scene: FC = () => {
               ? {
                   boxShadow: "0px -5px 6px 0px #e7e7e736",
                   paddingTop: 12,
+                  background: "#f6f8fa",
+                  paddingBottom: 36,
                 }
-              : undefined
+              : {
+                  background: "#f6f8fa",
+                  paddingBottom: 36,
+                }
           }
         >
           <Timer time={time} />

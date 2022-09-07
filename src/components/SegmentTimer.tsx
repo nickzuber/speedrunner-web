@@ -140,7 +140,7 @@ const RunningSegmentTimer: FC<{
           <span style={styles.bylineTextWrapper}>{"Best split"}</span>
           <Badge
             time={segment.pb}
-            color={BadgeColors.Green}
+            color={BadgeColors.Default}
             icon={BadgeIcons.Crown}
           />
         </span>
@@ -179,7 +179,7 @@ const QueuedSegmentTimer: FC<{ segment: QueuedSegment; index: number }> = ({
           <span style={styles.bylineTextWrapper}>{"Best split"}</span>
           <Badge
             time={segment.pb}
-            color={BadgeColors.Green}
+            color={BadgeColors.Default}
             icon={BadgeIcons.Crown}
           />
         </span>
@@ -209,7 +209,7 @@ const CompletedSegmentTimer: FC<{ segment: CompletedSegment; index: number }> =
             <span style={styles.bylineTextWrapper}>{"Best split"}</span>
             <Badge
               time={segment.pb ? Math.min(segment.pb, split) : split}
-              color={BadgeColors.Green}
+              color={BadgeColors.Default}
               icon={BadgeIcons.Crown}
             />
           </span>

@@ -296,14 +296,18 @@ export function getTotalTimeRanSoFar(stack: CompletedSegmentStack) {
   return Date.now() - stack.completed[0].start
 }
 
-// @TODO Doesn't work if there are no PBs really.
+// @TODO Doesn't work if there are no average.
 export function getEstimatedTimeLeft(stack: RunningSegmentStack) {
+  return stack.average - (Date.now() - stack.running.start)
+}
+
+// @TODO Doesn't work if there are no PBs really.
+export function getEstimatedPace(stack: RunningSegmentStack) {
   const segmentsToGo = stack.queued.reduce(
     (sum, segment) => sum + (segment.pb || 0),
     0
   )
   const timeLeftInRunningSegment =
     (stack.running.pb || 0) - (Date.now() - stack.running.start)
-
   return segmentsToGo + timeLeftInRunningSegment
 }

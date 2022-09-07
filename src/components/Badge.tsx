@@ -5,27 +5,49 @@ export enum BadgeColors {
   Green = "green",
   Red = "red",
   Gold = "gold",
+  Default = "default",
 }
 
 export enum BadgeIcons {
   Crown = "crown",
   Down = "down",
   Up = "up",
+  Zap = "zap",
 }
 
 const backgroundColors: Record<BadgeColors, string> = {
   [BadgeColors.Red]: "#ff1a44",
   [BadgeColors.Green]: "#29B227",
   [BadgeColors.Gold]: "#fab005",
+  [BadgeColors.Default]: "#f6f8fa",
 }
 
 const foregroundColors: Record<BadgeColors, string> = {
   [BadgeColors.Red]: "#fff",
   [BadgeColors.Green]: "#fff",
   [BadgeColors.Gold]: "#fff",
+  [BadgeColors.Default]: "rgba(102, 103, 104, 0.9)",
 }
 
 const badgeIcons: Record<BadgeIcons, React.ReactNode> = {
+  [BadgeIcons.Zap]: (
+    <svg
+      width="9"
+      height="13"
+      viewBox="0 0 9 13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ marginRight: 4 }}
+    >
+      <path
+        d="M3.66667 7.44828H1L5.33333 1V5.55172H8L3.66667 12V7.44828Z"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  ),
   [BadgeIcons.Crown]: (
     <svg
       width="10"
