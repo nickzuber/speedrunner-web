@@ -1,6 +1,7 @@
 export interface BaseSegment {
   id: string
   name: string
+  desc: string
   pb?: number
 }
 

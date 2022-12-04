@@ -10,29 +10,42 @@ import {
   SegmentStack,
 } from "../types/segments"
 
-export function createNewSegment(name: string, pb?: number): QueuedSegment {
+export function createNewSegment(
+  name: string,
+  desc: string,
+  pb?: number
+): QueuedSegment {
   return {
     id: uuidv4(),
     name,
+    desc,
     start: null,
     end: null,
     pb,
   }
 }
 
-export function createRunningSegment(name: string): RunningSegment {
+export function createRunningSegment(
+  name: string,
+  desc: string
+): RunningSegment {
   return {
     id: uuidv4(),
     name,
+    desc,
     start: Date.now(),
     end: null,
   }
 }
 
-export function createCompletedSegment(name: string): CompletedSegment {
+export function createCompletedSegment(
+  name: string,
+  desc: string
+): CompletedSegment {
   return {
     id: uuidv4(),
     name,
+    desc,
     start: Date.now(),
     end: Date.now() + 15 * 60 * 1000,
   }

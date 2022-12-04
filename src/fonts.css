@@ -1,34 +1,38 @@
 @font-face {
-  font-family: "franklin";
-  src: url("./fonts/franklin-normal-300.woff2") format("woff2");
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "franklin";
-  src: url("./fonts/franklin-normal-400.woff2") format("woff2");
+  font-family: "Anek";
+  src: url("./fonts/Anek_Devanagari/static/AnekDevanagari/AnekDevanagari-Regular.ttf")
+    format("truetype");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "franklin";
-  src: url("./fonts/franklin-normal-500.woff2") format("woff2");
+  font-family: "Anek";
+  src: url("./fonts/Anek_Devanagari/static/AnekDevanagari/AnekDevanagari-SemiBold.ttf")
+    format("truetype");
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "franklin";
-  src: url("./fonts/franklin-normal-600.woff2") format("woff2");
-  font-weight: 600;
+  font-family: "Mono";
+  src: url("./fonts/Azeret_Mono/static/AzeretMono-Regular.ttf")
+    format("truetype");
+  font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "franklin";
-  src: url("./fonts/franklin-normal-700.woff2") format("woff2");
-  font-weight: 700;
+  font-family: "Mono";
+  src: url("./fonts/Azeret_Mono/static/AzeretMono-SemiBold.ttf")
+    format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Mono";
+  src: url("./fonts/Azeret_Mono/static/AzeretMono-Bold.ttf") format("truetype");
+  font-weight: 600;
   font-style: normal;
 }

@@ -134,8 +134,9 @@ export const Badge: FC<BadgeProps> = ({
     <div
       className={fadeIn ? "fade-in" : undefined}
       style={{
-        fontSize: 12,
-        fontWeight: 600,
+        fontFamily: "Anek",
+        fontSize: 14,
+        fontWeight: 400,
         // width: width || "fit-content",
         padding: "1px",
         display: "inline-flex",
@@ -147,15 +148,14 @@ export const Badge: FC<BadgeProps> = ({
         color: foregroundColors[color],
         transform: `scale(${size ? size : 0.9})`,
         marginLeft: -10,
-        // fontFamily: "Azeret Mono, monospace",
-        // letterSpacing: -0.5,
+        letterSpacing: 0.5,
         ...style,
         width: 60,
         justifyContent: "center",
       }}
     >
       {badgeIcons[icon]}
-      {formattedTs}
+      <span style={{ paddingTop: 4 }}>{formattedTs}</span>
     </div>
   )
 }

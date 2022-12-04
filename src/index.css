@@ -16,6 +16,14 @@ body {
   flex: 0 0 18px;
   display: block;
   text-align: center;
+  height: 38px;
+}
+
+.timer-number-container-segment span {
+  flex: 0 0 12px;
+  display: block;
+  text-align: center;
+  font-weight: 400;
 }
 
 .action-button {
@@ -37,8 +45,9 @@ body {
 }
 
 .action-button:disabled {
-  background: #c2002d75;
+  background: #c2002e;
   box-shadow: none;
+  opacity: 0.5;
 }
 
 .action-button:active {
@@ -47,9 +56,10 @@ body {
 }
 
 .action-button:active:disabled {
-  background: #c2002d75;
+  background: #c2002e;
   transform: scale(1);
   box-shadow: none;
+  opacity: 0.5;
 }
 
 .action-idle-button {
@@ -77,13 +87,15 @@ body {
 
 .action-idle-button:disabled {
   background: #ebeef1;
-  color: #03030366;
+  color: #030303;
+  opacity: 0.5;
 }
 
 .action-idle-button:active:disabled {
   background: #ebeef1;
-  color: #03030366;
+  color: #030303;
   transform: scale(1);
+  opacity: 0.5;
 }
 
 .slide-in {
@@ -183,18 +195,18 @@ body {
   }
 
   to {
-    transform: scale(0.9);
+    transform: scale(0.95);
     opacity: 0.5;
   }
 }
 
 .queued-segment {
-  transform: scale(0.9);
+  transform: scale(0.95);
   opacity: 0.35;
 }
 
 .running-segment {
-  transform: scale(0.9);
+  transform: scale(0.95);
   opacity: 0.5;
 
   animation-duration: 200ms;
@@ -205,7 +217,7 @@ body {
 
 @keyframes runningsegment {
   from {
-    transform: scale(0.9);
+    transform: scale(0.95);
     opacity: 0.5;
   }
 

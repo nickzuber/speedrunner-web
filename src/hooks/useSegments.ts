@@ -15,11 +15,28 @@ const useSegmentStackState = createState<SegmentStack>(PersistedState.Stack)
 
 // @TODO(nickz) hard-coded, will delete later
 const getInitialSegments = (): Array<QueuedSegment> => [
-  createNewSegment("Subway platform", parseStringForMs("6:34.11")),
-  createNewSegment("Doors open", parseStringForMs("0.38")),
-  createNewSegment("Exit subway", parseStringForMs("15:37.50")),
-  createNewSegment("Enter the elevator", parseStringForMs("8:39.14")),
+  createNewSegment(
+    "Subway platform",
+    "Leave your front gate and head towards the top of the station's subway platform.",
+    parseStringForMs("6:34.11")
+  ),
+  createNewSegment(
+    "Doors open",
+    "Wait for the train to arrive and wait for the doors to open.",
+    parseStringForMs("0.38")
+  ),
+  createNewSegment(
+    "Exit subway",
+    "Ride the train until you reach Canal street and wait for the train to stop.",
+    parseStringForMs("15:37.50")
+  ),
+  createNewSegment(
+    "Enter the elevator",
+    "Walk down Canal street to the office building and wait to enter the elevator.",
+    parseStringForMs("8:39.14")
+  ),
 ]
+
 const getInitialStack = (): SegmentStack => ({
   queued: getInitialSegments(),
   running: null,
@@ -36,7 +53,7 @@ export type SegmentsOptions = {
   advanceStack: () => void
   updateSegment: (id: string, newName: string) => void
   moveSegment: (id: string, newPosition: number) => void
-  addNewSegment: (name: string) => void
+  addNewSegment: (name: string, desc: string) => void
   deleteSegment: (id: string) => void
   clearSegments: () => void
   saveSegments: () => void
@@ -85,9 +102,9 @@ export function useSegments(): SegmentsOptions {
     setStack(initialStack)
   }
 
-  function addNewSegment(name: string) {
+  function addNewSegment(name: string, desc: string) {
     const initialStack = resetStack(stack)
-    initialStack.queued = [...initialStack.queued, createNewSegment(name)]
+    initialStack.queued = [...initialStack.queued, createNewSegment(name, desc)]
     setStack(initialStack)
   }
 

@@ -55,9 +55,9 @@ export function useSegmentsMock(initialStack?: SegmentStack): SegmentsOptions {
     setStack(initialStack)
   }
 
-  function addNewSegment(name: string) {
+  function addNewSegment(name: string, desc: string) {
     const initialStack = resetStack(stack)
-    initialStack.queued = [...initialStack.queued, createNewSegment(name)]
+    initialStack.queued = [...initialStack.queued, createNewSegment(name, desc)]
     setStack(initialStack)
   }
 

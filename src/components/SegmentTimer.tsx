@@ -17,8 +17,10 @@ import {
   getBadgeSplitColor,
   getBadgeSplitIcon,
   getBadgeSplitWidth,
+  parseTimestamp,
 } from "../utils/time"
 import { Badge, BadgeColors, BadgeIcons } from "./Badge"
+import { TimeDisplay } from "./TimeDisplay"
 
 export interface SegmentTimerProps {
   segment: Segment
@@ -68,6 +70,10 @@ const styles: Record<string, CSSProperties> = {
     position: "absolute",
     right: 18,
     zIndex: 1,
+    fontFamily: "Anek",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   name: {
     display: "block",
@@ -91,6 +97,8 @@ const styles: Record<string, CSSProperties> = {
   minutes: {
     display: "inline-block",
     textAlign: "left",
+    fontWeight: 400,
+    letterSpacing: 3,
   },
   milliseconds: {
     width: 28,
@@ -98,6 +106,8 @@ const styles: Record<string, CSSProperties> = {
     textAlign: "left",
     fontSize: "60%",
     opacity: 0.75,
+    fontWeight: 400,
+    letterSpacing: 3,
   },
 }
 
@@ -150,7 +160,7 @@ const RunningSegmentTimer: FC<{
         </span>
       </div>
       <div style={styles.right} className="slide-in">
-        {diffTs ? (
+        {/* {diffTs ? (
           <Badge
             color={getBadgeSplitColor(diffTs)}
             icon={getBadgeSplitIcon(diffTs)}
@@ -159,13 +169,18 @@ const RunningSegmentTimer: FC<{
             style={{ marginRight: 8 }}
             size={1}
           />
-        ) : null}
-        <span
-          style={{ ...styles.minutes, width: 18 * numDigits + 6 * numColons }}
-        >
-          {mins}
-        </span>
-        <span style={styles.milliseconds}>{`.${ms}`}</span>
+        ) : null} */}
+        <TimeDisplay
+          noHours
+          ts={split}
+          className="timer-number-container-segment"
+          numberStyle={{ flex: "0 0 32px" }}
+          style={{
+            width: 80,
+            fontSize: 24,
+            justifyContent: "flex-end",
+          }}
+        />
       </div>
     </div>
   )
@@ -202,7 +217,8 @@ const QueuedSegmentTimer: FC<{ segment: QueuedSegment; index: number }> = ({
 const CompletedSegmentTimer: FC<{ segment: CompletedSegment; index: number }> =
   ({ segment, index }) => {
     const split = segment.end - segment.start
-    const formattedTs = formatTimestamp(getSegmentSplit(segment))
+    const ts = getSegmentSplit(segment)
+    const formattedTs = formatTimestamp(ts)
     const [mins, ms] = formattedTs.split(".")
 
     const numDigits = mins.split("").filter((char) => !isNaN(+char)).length
@@ -227,23 +243,30 @@ const CompletedSegmentTimer: FC<{ segment: CompletedSegment; index: number }> =
           </span>
         </div>
         <div style={styles.right}>
-          {diffTs ? (
-            <Badge
-              color={getBadgeSplitColor(diffTs)}
-              icon={getBadgeSplitIcon(diffTs)}
-              time={Math.abs(diffTs)}
-              width={getBadgeSplitWidth(diffTs, false)}
-              style={{ marginRight: 8 }}
-              size={1}
-              fadeIn={diffTs <= -1000 * 90}
-            />
-          ) : null}
-          <span
-            style={{ ...styles.minutes, width: 18 * numDigits + 6 * numColons }}
-          >
-            {mins}
-          </span>
-          <span style={styles.milliseconds}>{`.${ms}`}</span>
+          {/* {diffTs ? (
+            <div style={{ background: "green" }}>
+              <Badge
+                color={getBadgeSplitColor(diffTs)}
+                icon={getBadgeSplitIcon(diffTs)}
+                time={Math.abs(diffTs)}
+                width={getBadgeSplitWidth(diffTs, false)}
+                style={{ marginRight: 8 }}
+                size={1}
+                fadeIn={diffTs <= -1000 * 90}
+              />
+            </div>
+          ) : null} */}
+          <TimeDisplay
+            ts={ts}
+            noHours
+            className="timer-number-container-segment"
+            numberStyle={{ flex: "0 0 32px" }}
+            style={{
+              width: 80,
+              fontSize: 24,
+              justifyContent: "flex-end",
+            }}
+          />
         </div>
       </div>
     )

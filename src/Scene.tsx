@@ -1,6 +1,5 @@
 import { FC, useContext, useEffect, useState } from "react"
 import { Actions } from "./components/Actions"
-import { SegmentTimelapse } from "./components/SegmentTimelapse"
 import { SegmentTimer } from "./components/SegmentTimer"
 import { Timer } from "./components/Timer"
 import { SegmentsContext } from "./contexts/segments"
@@ -74,7 +73,6 @@ export const Scene: FC = () => {
       }}
     >
       <Timer time={time} />
-      <SegmentTimelapse />
       <div
         id="scrollable-segments"
         style={

@@ -8,6 +8,7 @@ import {
 } from "../utils/segments"
 import { formatTimestamp, parseTimestamp } from "../utils/time"
 import { Badge, BadgeColors, BadgeIcons } from "./Badge"
+import { TimeDisplay } from "./TimeDisplay"
 
 export interface TimerProps {
   time: number
@@ -21,12 +22,17 @@ export const Timer: FC<TimerProps> = ({ time }) => {
     ? stack.completed[0]
     : null
 
+  const runningSegment = stack.running
+
   const ts = firstSegment ? Math.max(time - firstSegment.start, 0) : 0
   const formattedTs = formatTimestamp(ts)
   const [mins, ms] = formattedTs.split(".")
 
   const numDigits = mins.split("").filter((char) => !isNaN(+char)).length
   const numColons = mins.length - numDigits
+
+  const name = runningSegment?.name
+  const desc = runningSegment?.desc
 
   return (
     <div
@@ -36,7 +42,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
         fontWeight: 500,
         padding: "16px 24px",
         margin: "0px 0px 4px",
-        gap: 18,
+        gap: 4,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -49,135 +55,247 @@ export const Timer: FC<TimerProps> = ({ time }) => {
       }}
     >
       <TimerIcon />
-      <LargeTimer ts={ts} />
+      <TimeDisplay
+        ts={ts}
+        className="timer-number-container"
+        numberStyle={{
+          flex: "0 0 50px",
+        }}
+        semiStyle={{
+          marginTop: 12,
+          flex: "0 0 25px",
+        }}
+        style={{
+          fontSize: 32,
+          fontWeight: 500,
+          width: "100%",
+          alignItems: "center",
+          margin: "12px auto",
+        }}
+      />
       <div
         style={{
-          flex: 1.5,
+          width: "90%",
+          height: 100,
           display: "flex",
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "space-between",
-          position: "absolute",
-          bottom: 56,
-          width: "42%",
-          opacity: 0.5,
+          justifyContent: name && desc ? "flex-start" : "center",
         }}
       >
-        <span
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 14,
-            fontWeight: 400,
-            lineHeight: "18px",
-            color: "#ffffff77",
-          }}
-        >
-          <Badge
-            time={stack.pb}
-            color={BadgeColors.Default}
-            icon={BadgeIcons.Crown}
-          />
-        </span>
-        <span
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 14,
-            fontWeight: 400,
-            lineHeight: "18px",
-            color: "#ffffff77",
-          }}
-        >
-          <Badge
-            time={getTheoreticalBestTime(stack)}
-            color={BadgeColors.Default}
-            icon={BadgeIcons.Zap}
-          />
-        </span>
+        {name && desc ? (
+          <div
+            style={{
+              textAlign: "center",
+            }}
+          >
+            <span
+              style={{
+                fontWeight: 600,
+                textTransform: "uppercase",
+                fontSize: 18,
+                display: "block",
+                margin: "8px auto 16px",
+              }}
+            >
+              {name}
+            </span>
+            <p
+              style={{
+                marginBlock: "auto",
+                marginInline: "auto",
+                padding: "0",
+                fontSize: "14px",
+                lineHeight: "19px",
+                opacity: "0.5",
+              }}
+            >
+              {desc}
+            </p>
+          </div>
+        ) : (
+          <>
+            <span
+              style={{
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                fontSize: 24,
+                fontWeight: 400,
+                lineHeight: "18px",
+                color: "#ffffffaa",
+                opacity: 0.35,
+                margin: "8px auto",
+                width: "95%",
+              }}
+            >
+              <span
+                style={{
+                  color: "#fff",
+                  fontWeight: 500,
+                  fontSize: 17,
+                  display: "block",
+                }}
+              >
+                Personal fastest time
+              </span>
+              <Badge
+                size={1.1}
+                style={{
+                  fontWeight: 500,
+                  position: "absolute",
+                  top: -4,
+                  right: 0,
+                }}
+                time={stack.pb}
+                color={BadgeColors.Default}
+                icon={BadgeIcons.Crown}
+              />
+            </span>
+            <span
+              style={{
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                fontSize: 24,
+                fontWeight: 400,
+                lineHeight: "18px",
+                color: "#ffffffaa",
+                opacity: 0.35,
+                margin: "8px auto",
+                width: "95%",
+              }}
+            >
+              <span
+                style={{
+                  color: "#fff",
+                  fontWeight: 500,
+                  fontSize: 17,
+                  display: "block",
+                }}
+              >
+                Theoretical fastest time
+              </span>
+              <Badge
+                size={1.1}
+                style={{
+                  fontWeight: 500,
+                  position: "absolute",
+                  top: -4,
+                  right: 0,
+                }}
+                time={getTheoreticalBestTime(stack)}
+                color={BadgeColors.Default}
+                icon={BadgeIcons.Zap}
+              />
+            </span>
+          </>
+        )}
       </div>
     </div>
   )
 }
 
-function NumberDisplay({ num }: { num: number }) {
-  const twoDigitNum = num % 100
-  const showLeadingZero = twoDigitNum < 10
-  const isNumZero = num === 0
+// function NumberDisplay({
+//   num,
+//   small,
+//   dimLeadingZero,
+// }: {
+//   num: number
+//   small?: boolean
+//   dimLeadingZero?: boolean
+// }) {
+//   const twoDigitNum = num % 100
+//   const showLeadingZero = twoDigitNum < 10
+//   const isNumZero = num === 0
 
-  const d1 = `${twoDigitNum}`.split("")[0]
-  const d2 = `${twoDigitNum}`.split("")[1]
+//   const dim = 0.25
 
-  return (
-    <div
-      className="timer-number-container"
-      style={{
-        flex: "0 0 50px",
-        display: "flex",
-        justifyContent: "space-evenly",
-        alignItems: "center",
-      }}
-    >
-      {isNumZero ? (
-        <>
-          <span style={{ opacity: 0.5 }}>{"0"}</span>
-          <span style={{ opacity: 0.5 }}>{"0"}</span>
-        </>
-      ) : showLeadingZero ? (
-        <>
-          <span style={{ opacity: 0.5 }}>{"0"}</span>
-          <span>{d1}</span>
-        </>
-      ) : (
-        <>
-          <span>{d1}</span>
-          <span>{d2}</span>
-        </>
-      )}
-    </div>
-  )
-}
+//   const d1 = `${twoDigitNum}`.split("")[0]
+//   const d2 = `${twoDigitNum}`.split("")[1]
 
-function LargeTimer({ ts }: { ts: number }) {
-  const { hours, minutes, seconds, ms } = parseTimestamp(ts)
-  console.info({ hours, minutes, seconds, ms })
+//   return (
+//     <div
+//       className="timer-number-container"
+//       style={{
+//         flex: "0 0 50px",
+//         display: "flex",
+//         justifyContent: "space-evenly",
+//         alignItems: "center",
+//       }}
+//     >
+//       {isNumZero ? (
+//         <>
+//           <span style={{ opacity: dim }}>{"0"}</span>
+//           <span style={{ opacity: dim }}>{"0"}</span>
+//         </>
+//       ) : showLeadingZero ? (
+//         <>
+//           <span style={{ opacity: small || dimLeadingZero ? dim : 1 }}>
+//             {"0"}
+//           </span>
+//           <span style={{ opacity: small ? dim : 1 }}>{d1}</span>
+//         </>
+//       ) : (
+//         <>
+//           <span style={{ opacity: small ? dim : 1 }}>{d1}</span>
+//           <span style={{ opacity: small ? dim : 1 }}>{d2}</span>
+//         </>
+//       )}
+//     </div>
+//   )
+// }
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <NumberDisplay num={hours} />
-      <span style={{ flex: "0 0 25px", textAlign: "center" }}>{":"}</span>
-      <NumberDisplay num={minutes} />
-      <span style={{ flex: "0 0 25px", textAlign: "center" }}>{":"}</span>
-      <NumberDisplay num={seconds} />
-      <span
-        style={{
-          flex: "1 0 30px",
-          marginTop: 6,
-          textAlign: "left",
-          fontSize: "60%",
-          opacity: 0.5,
-        }}
-      >{`.${ms}`}</span>
-    </div>
-  )
-}
+// function Semicolon({ dim }: { dim?: boolean }) {
+//   return (
+//     <span
+//       style={{
+//         marginTop: 12,
+//         flex: "0 0 25px",
+//         textAlign: "center",
+//         opacity: dim ? 0.25 : 1,
+//       }}
+//     >
+//       {":"}
+//     </span>
+//   )
+// }
+
+// function LargeTimer({ ts }: { ts: number }) {
+//   const { hours, minutes, seconds, ms } = parseTimestamp(ts)
+
+//   return (
+//     <div
+//       style={{
+//         display: "flex",
+//         flexDirection: "row",
+//         alignItems: "center",
+//         justifyContent: "center",
+//         fontFamily: "Anek",
+//         fontSize: 32,
+//         fontWeight: 500,
+//       }}
+//     >
+//       <NumberDisplay num={hours} />
+//       <Semicolon dim={hours === 0} />
+//       <NumberDisplay num={minutes} dimLeadingZero={hours === 0} />
+//       <Semicolon dim={minutes === 0} />
+//       <NumberDisplay num={seconds} dimLeadingZero={minutes === 0} />
+//       <Semicolon dim />
+//       <NumberDisplay small num={ms} />
+//     </div>
+//   )
+// }
 
 function TimerIcon() {
   return (
     <svg
       style={{
-        transform: "scale(0.8)",
+        transform: "scale(0.9)",
       }}
       width="88"
       height="88"
