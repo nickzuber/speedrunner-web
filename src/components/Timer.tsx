@@ -41,7 +41,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
         fontSize: 28,
         fontWeight: 500,
         padding: "16px 24px",
-        margin: "0px 0px 4px",
+        margin: "18px 0px 4px",
         gap: 4,
         display: "flex",
         flexDirection: "column",
@@ -199,97 +199,6 @@ export const Timer: FC<TimerProps> = ({ time }) => {
     </div>
   )
 }
-
-// function NumberDisplay({
-//   num,
-//   small,
-//   dimLeadingZero,
-// }: {
-//   num: number
-//   small?: boolean
-//   dimLeadingZero?: boolean
-// }) {
-//   const twoDigitNum = num % 100
-//   const showLeadingZero = twoDigitNum < 10
-//   const isNumZero = num === 0
-
-//   const dim = 0.25
-
-//   const d1 = `${twoDigitNum}`.split("")[0]
-//   const d2 = `${twoDigitNum}`.split("")[1]
-
-//   return (
-//     <div
-//       className="timer-number-container"
-//       style={{
-//         flex: "0 0 50px",
-//         display: "flex",
-//         justifyContent: "space-evenly",
-//         alignItems: "center",
-//       }}
-//     >
-//       {isNumZero ? (
-//         <>
-//           <span style={{ opacity: dim }}>{"0"}</span>
-//           <span style={{ opacity: dim }}>{"0"}</span>
-//         </>
-//       ) : showLeadingZero ? (
-//         <>
-//           <span style={{ opacity: small || dimLeadingZero ? dim : 1 }}>
-//             {"0"}
-//           </span>
-//           <span style={{ opacity: small ? dim : 1 }}>{d1}</span>
-//         </>
-//       ) : (
-//         <>
-//           <span style={{ opacity: small ? dim : 1 }}>{d1}</span>
-//           <span style={{ opacity: small ? dim : 1 }}>{d2}</span>
-//         </>
-//       )}
-//     </div>
-//   )
-// }
-
-// function Semicolon({ dim }: { dim?: boolean }) {
-//   return (
-//     <span
-//       style={{
-//         marginTop: 12,
-//         flex: "0 0 25px",
-//         textAlign: "center",
-//         opacity: dim ? 0.25 : 1,
-//       }}
-//     >
-//       {":"}
-//     </span>
-//   )
-// }
-
-// function LargeTimer({ ts }: { ts: number }) {
-//   const { hours, minutes, seconds, ms } = parseTimestamp(ts)
-
-//   return (
-//     <div
-//       style={{
-//         display: "flex",
-//         flexDirection: "row",
-//         alignItems: "center",
-//         justifyContent: "center",
-//         fontFamily: "Anek",
-//         fontSize: 32,
-//         fontWeight: 500,
-//       }}
-//     >
-//       <NumberDisplay num={hours} />
-//       <Semicolon dim={hours === 0} />
-//       <NumberDisplay num={minutes} dimLeadingZero={hours === 0} />
-//       <Semicolon dim={minutes === 0} />
-//       <NumberDisplay num={seconds} dimLeadingZero={minutes === 0} />
-//       <Semicolon dim />
-//       <NumberDisplay small num={ms} />
-//     </div>
-//   )
-// }
 
 function TimerIcon() {
   return (
