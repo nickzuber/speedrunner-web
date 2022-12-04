@@ -41,7 +41,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
         fontSize: 28,
         fontWeight: 500,
         padding: "16px 24px",
-        margin: "18px 0px 4px",
+        margin: "12px 0px 4px",
         gap: 4,
         display: "flex",
         flexDirection: "column",
