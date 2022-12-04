@@ -71,7 +71,7 @@ const styles: Record<string, CSSProperties> = {
   },
   name: {
     display: "block",
-    fontSize: 16,
+    fontSize: 18,
     lineHeight: "20px",
     fontWeight: 500,
     width: "50%",
@@ -82,11 +82,11 @@ const styles: Record<string, CSSProperties> = {
     fontSize: 14,
     fontWeight: 400,
     lineHeight: "18px",
-    color: "#00000077",
+    color: "#ffffff",
   },
   bylineTextWrapper: {
     display: "inline-block",
-    width: 65,
+    width: 80,
   },
   minutes: {
     display: "inline-block",
@@ -126,7 +126,11 @@ const RunningSegmentTimer: FC<{
   }, [])
 
   return (
-    <div id={`segment-${index}`} style={styles.container}>
+    <div
+      id={`segment-${index}`}
+      className="running-segment"
+      style={styles.container}
+    >
       <div
         className={
           stack.completed.length === 0
@@ -137,7 +141,7 @@ const RunningSegmentTimer: FC<{
       <div style={styles.left}>
         <span style={styles.name}>{segment.name}</span>
         <span style={styles.byline}>
-          <span style={styles.bylineTextWrapper}>{"Best split"}</span>
+          <span style={styles.bylineTextWrapper}>{"Best time is"}</span>
           <Badge
             time={segment.pb}
             color={BadgeColors.Default}
@@ -172,11 +176,15 @@ const QueuedSegmentTimer: FC<{ segment: QueuedSegment; index: number }> = ({
   index,
 }) => {
   return (
-    <div id={`segment-${index}`} style={styles.container}>
+    <div
+      id={`segment-${index}`}
+      className="queued-segment"
+      style={styles.container}
+    >
       <div style={styles.left}>
         <span style={styles.name}>{segment.name}</span>
         <span style={styles.byline}>
-          <span style={styles.bylineTextWrapper}>{"Best split"}</span>
+          <span style={styles.bylineTextWrapper}>{"Best time is"}</span>
           <Badge
             time={segment.pb}
             color={BadgeColors.Default}
@@ -202,11 +210,15 @@ const CompletedSegmentTimer: FC<{ segment: CompletedSegment; index: number }> =
     const diffTs = segment.pb ? split - segment.pb : null
 
     return (
-      <div id={`segment-${index}`} style={styles.container}>
+      <div
+        id={`segment-${index}`}
+        className="completed-segment"
+        style={styles.container}
+      >
         <div style={styles.left}>
           <span style={styles.name}>{segment.name}</span>
           <span style={styles.byline}>
-            <span style={styles.bylineTextWrapper}>{"Best split"}</span>
+            <span style={styles.bylineTextWrapper}>{"Best time is"}</span>
             <Badge
               time={segment.pb ? Math.min(segment.pb, split) : split}
               color={BadgeColors.Default}

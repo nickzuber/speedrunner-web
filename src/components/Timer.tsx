@@ -6,7 +6,7 @@ import {
   isCompletedSegmentStack,
   isRunningSegmentStack,
 } from "../utils/segments"
-import { formatTimestamp } from "../utils/time"
+import { formatTimestamp, parseTimestamp } from "../utils/time"
 import { Badge, BadgeColors, BadgeIcons } from "./Badge"
 
 export interface TimerProps {
@@ -36,46 +36,45 @@ export const Timer: FC<TimerProps> = ({ time }) => {
         fontWeight: 500,
         padding: "16px 24px",
         margin: "0px 0px 4px",
+        gap: 18,
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
         boxSizing: "border-box",
-        background: "#f6f8fa",
-        borderTop: "1px solid #ebeef1",
-        borderBottom: "1px solid #ebeef1",
+        background: "transparent",
+        borderTop: "1px solid transparent",
+        borderBottom: "1px solid transparent",
       }}
     >
+      <TimerIcon />
+      <LargeTimer ts={ts} />
       <div
         style={{
           flex: 1.5,
           display: "flex",
-          flexDirection: "column",
-          alignItems: "baseline",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          position: "absolute",
+          bottom: 56,
+          width: "42%",
+          opacity: 0.5,
         }}
       >
         <span
           style={{
-            display: "block",
-            fontSize: 18,
-            lineHeight: "24px",
-            fontWeight: 500,
-            marginBottom: 4,
-          }}
-        >
-          {"Total"}
-        </span>
-        <span
-          style={{
-            display: "inline-block",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
             fontSize: 14,
             fontWeight: 400,
             lineHeight: "18px",
-            color: "#00000077",
-            marginBottom: -4,
+            color: "#ffffff77",
           }}
         >
-          {"Personal best"}
           <Badge
             time={stack.pb}
             color={BadgeColors.Default}
@@ -84,14 +83,16 @@ export const Timer: FC<TimerProps> = ({ time }) => {
         </span>
         <span
           style={{
-            display: "inline-block",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
             fontSize: 14,
             fontWeight: 400,
             lineHeight: "18px",
-            color: "#00000077",
+            color: "#ffffff77",
           }}
         >
-          {"Theoretical best"}
           <Badge
             time={getTheoreticalBestTime(stack)}
             color={BadgeColors.Default}
@@ -99,28 +100,129 @@ export const Timer: FC<TimerProps> = ({ time }) => {
           />
         </span>
       </div>
-      <div
-        style={{ flex: 1, textAlign: "right", position: "absolute", right: 34 }}
-      >
-        <span
-          style={{
-            width: 18 * numDigits + 6 * numColons,
-            display: "inline-block",
-            textAlign: "left",
-          }}
-        >
-          {mins}
-        </span>
-        <span
-          style={{
-            width: 28,
-            display: "inline-block",
-            textAlign: "left",
-            fontSize: "60%",
-            opacity: 0.75,
-          }}
-        >{`.${ms}`}</span>
-      </div>
     </div>
+  )
+}
+
+function NumberDisplay({ num }: { num: number }) {
+  const twoDigitNum = num % 100
+  const showLeadingZero = twoDigitNum < 10
+  const isNumZero = num === 0
+
+  const d1 = `${twoDigitNum}`.split("")[0]
+  const d2 = `${twoDigitNum}`.split("")[1]
+
+  return (
+    <div
+      className="timer-number-container"
+      style={{
+        flex: "0 0 50px",
+        display: "flex",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+      }}
+    >
+      {isNumZero ? (
+        <>
+          <span style={{ opacity: 0.5 }}>{"0"}</span>
+          <span style={{ opacity: 0.5 }}>{"0"}</span>
+        </>
+      ) : showLeadingZero ? (
+        <>
+          <span style={{ opacity: 0.5 }}>{"0"}</span>
+          <span>{d1}</span>
+        </>
+      ) : (
+        <>
+          <span>{d1}</span>
+          <span>{d2}</span>
+        </>
+      )}
+    </div>
+  )
+}
+
+function LargeTimer({ ts }: { ts: number }) {
+  const { hours, minutes, seconds, ms } = parseTimestamp(ts)
+  console.info({ hours, minutes, seconds, ms })
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <NumberDisplay num={hours} />
+      <span style={{ flex: "0 0 25px", textAlign: "center" }}>{":"}</span>
+      <NumberDisplay num={minutes} />
+      <span style={{ flex: "0 0 25px", textAlign: "center" }}>{":"}</span>
+      <NumberDisplay num={seconds} />
+      <span
+        style={{
+          flex: "1 0 30px",
+          marginTop: 6,
+          textAlign: "left",
+          fontSize: "60%",
+          opacity: 0.5,
+        }}
+      >{`.${ms}`}</span>
+    </div>
+  )
+}
+
+function TimerIcon() {
+  return (
+    <svg
+      style={{
+        transform: "scale(0.8)",
+      }}
+      width="88"
+      height="88"
+      viewBox="0 0 88 88"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="44" cy="44" r="44" fill="white" />
+      <circle cx="44" cy="44" r="20" fill="#FF1A44" />
+      <line
+        x1="44"
+        y1="35"
+        x2="44"
+        y2="45"
+        stroke="white"
+        stroke-width="6"
+        stroke-linecap="round"
+      />
+      <line
+        x1="44"
+        y1="35"
+        x2="44"
+        y2="45"
+        stroke="white"
+        stroke-width="6"
+        stroke-linecap="round"
+      />
+      <line
+        x1="49.9298"
+        y1="48.1971"
+        x2="44.1972"
+        y2="45.0702"
+        stroke="white"
+        stroke-width="6"
+        stroke-linecap="round"
+      />
+      <line
+        x1="49.9298"
+        y1="48.1971"
+        x2="44.1972"
+        y2="45.0702"
+        stroke="white"
+        stroke-width="6"
+        stroke-linecap="round"
+      />
+    </svg>
   )
 }

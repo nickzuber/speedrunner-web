@@ -15,18 +15,22 @@ export enum BadgeIcons {
   Zap = "zap",
 }
 
-const backgroundColors: Record<BadgeColors, string> = {
-  [BadgeColors.Red]: "#ff1a44",
-  [BadgeColors.Green]: "#29B227",
-  [BadgeColors.Gold]: "#fab005",
+const foregroundColors: Record<BadgeColors, string> = {
+  // [BadgeColors.Red]: "#ff1a44",
+  // [BadgeColors.Green]: "#29B227",
+  // [BadgeColors.Gold]: "#fab005",
+  // [BadgeColors.Default]: "#f6f8fa",
+  [BadgeColors.Red]: "#f6f8fa",
+  [BadgeColors.Green]: "#f6f8fa",
+  [BadgeColors.Gold]: "#f6f8fa",
   [BadgeColors.Default]: "#f6f8fa",
 }
 
-const foregroundColors: Record<BadgeColors, string> = {
-  [BadgeColors.Red]: "#fff",
-  [BadgeColors.Green]: "#fff",
-  [BadgeColors.Gold]: "#fff",
-  [BadgeColors.Default]: "rgba(102, 103, 104, 0.9)",
+const backgroundColors: Record<BadgeColors, string> = {
+  [BadgeColors.Red]: "transparent",
+  [BadgeColors.Green]: "transparent",
+  [BadgeColors.Gold]: "transparent",
+  [BadgeColors.Default]: "transparent",
 }
 
 const badgeIcons: Record<BadgeIcons, React.ReactNode> = {
@@ -133,7 +137,7 @@ export const Badge: FC<BadgeProps> = ({
         fontSize: 12,
         fontWeight: 600,
         // width: width || "fit-content",
-        padding: "1px 6px",
+        padding: "1px",
         display: "inline-flex",
         alignItems: "center",
         // justifyContent: width ? undefined : "center",
@@ -142,6 +146,7 @@ export const Badge: FC<BadgeProps> = ({
         background: backgroundColors[color],
         color: foregroundColors[color],
         transform: `scale(${size ? size : 0.9})`,
+        marginLeft: -10,
         // fontFamily: "Azeret Mono, monospace",
         // letterSpacing: -0.5,
         ...style,

@@ -1,5 +1,28 @@
 import { BadgeColors, BadgeIcons } from "../components/Badge"
 
+export function parseTimestamp(ts: number) {
+  if (ts < 0) {
+    return {
+      ms: 0,
+      seconds: 0,
+      minutes: 0,
+      hours: 0,
+    }
+  }
+
+  const ms = Number((ts / 1000).toFixed(2).split(".")[1])
+  const seconds = Math.floor(ts / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
+
+  return {
+    ms,
+    seconds: seconds % 60,
+    minutes: minutes % 60,
+    hours: hours % 60,
+  }
+}
+
 export function formatTimestamp(ts: number): string {
   if (ts < 0) {
     return "-.-"
