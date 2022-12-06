@@ -3,6 +3,7 @@ import { parseTimestamp } from "../utils/time"
 
 interface TimeDisplayProps {
   ts: number
+  dimMs?: boolean
   noHours?: boolean
   style?: CSSProperties
   numberStyle?: CSSProperties
@@ -12,6 +13,7 @@ interface TimeDisplayProps {
 
 export function TimeDisplay({
   ts,
+  dimMs,
   noHours,
   style,
   numberStyle,
@@ -56,8 +58,13 @@ export function TimeDisplay({
         dimLeadingZero={minutes === 0}
         noDimZero={minutes > 0}
       />
-      <Semicolon dim={ts === 0} style={semiStyle} />
-      <NumberDisplay style={numberStyle} num={ms} className={className} />
+      <Semicolon dim={ts === 0 || dimMs} style={semiStyle} />
+      <NumberDisplay
+        dim={dimMs}
+        style={numberStyle}
+        num={ms}
+        className={className}
+      />
     </div>
   )
 }
@@ -105,15 +112,15 @@ export function NumberDisplay({
         </>
       ) : showLeadingZero ? (
         <>
-          <span style={{ opacity: dimLeadingZero ? dimOpacity : 1 }}>
+          <span style={{ opacity: dim || dimLeadingZero ? dimOpacity : 1 }}>
             {"0"}
           </span>
-          <span style={{ opacity: small ? dimOpacity : 1 }}>{d1}</span>
+          <span style={{ opacity: dim || small ? dimOpacity : 1 }}>{d1}</span>
         </>
       ) : (
         <>
-          <span style={{ opacity: small ? dimOpacity : 1 }}>{d1}</span>
-          <span style={{ opacity: small ? dimOpacity : 1 }}>{d2}</span>
+          <span style={{ opacity: dim || small ? dimOpacity : 1 }}>{d1}</span>
+          <span style={{ opacity: dim || small ? dimOpacity : 1 }}>{d2}</span>
         </>
       )}
     </div>

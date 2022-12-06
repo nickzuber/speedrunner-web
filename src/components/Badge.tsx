@@ -103,9 +103,9 @@ const badgeIcons: Record<BadgeIcons, React.ReactNode> = {
 
 export interface BadgeProps {
   color: BadgeColors
-  icon: BadgeIcons
+  icon?: BadgeIcons
   width?: number
-  time?: number
+  time?: number | string
   size?: number
   fadeIn?: boolean
   style?: CSSProperties
@@ -120,15 +120,18 @@ export const Badge: FC<BadgeProps> = ({
   fadeIn,
   style,
 }) => {
-  const formattedTs = time
-    ? time >= 1000 * 60 * 60
-      ? "Lots!"
-      : time >= 1000 * 60
-      ? formatTimestamp(time).split(".")[0]
-      : time >= 1000 * 10
-      ? formatTimestamp(time).slice(0, -1)
-      : formatTimestamp(time)
-    : "--.--"
+  const formattedTs =
+    typeof time === "number"
+      ? time >= 1000 * 60 * 60
+        ? "Lots!"
+        : time >= 1000 * 60
+        ? formatTimestamp(time).split(".")[0]
+        : time >= 1000 * 10
+        ? formatTimestamp(time).slice(0, -1)
+        : formatTimestamp(time)
+      : typeof time === "string"
+      ? time
+      : "--.--"
 
   return (
     <div
@@ -149,12 +152,12 @@ export const Badge: FC<BadgeProps> = ({
         transform: `scale(${size ? size : 0.9})`,
         marginLeft: -10,
         letterSpacing: 0.5,
-        ...style,
-        width: 60,
+        width: width || 60,
         justifyContent: "center",
+        ...style,
       }}
     >
-      {badgeIcons[icon]}
+      {icon ? badgeIcons[icon] : null}
       <span style={{ paddingTop: 4 }}>{formattedTs}</span>
     </div>
   )

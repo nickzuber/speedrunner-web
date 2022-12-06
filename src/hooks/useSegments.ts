@@ -43,7 +43,7 @@ const getInitialStack = (): SegmentStack => ({
   completed: [],
   pb: parseStringForMs("31:39.11"),
   attempts: 1,
-  average: parseStringForMs("31:39.11"),
+  average: parseStringForMs("38:00.00"),
 })
 
 export type SegmentsOptions = {

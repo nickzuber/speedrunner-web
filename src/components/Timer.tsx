@@ -2,11 +2,12 @@ import { FC, useContext } from "react"
 import { SegmentsContext } from "../contexts/segments"
 import {
   getCompletedStackTime,
+  getEstimatedTimeLeft,
   getTheoreticalBestTime,
   isCompletedSegmentStack,
   isRunningSegmentStack,
 } from "../utils/segments"
-import { formatTimestamp, parseTimestamp } from "../utils/time"
+import { formatDateMs, formatTimestamp, parseTimestamp } from "../utils/time"
 import { Badge, BadgeColors, BadgeIcons } from "./Badge"
 import { TimeDisplay } from "./TimeDisplay"
 
@@ -41,7 +42,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
         fontSize: 28,
         fontWeight: 500,
         padding: "16px 24px",
-        margin: "12px 0px 4px",
+        margin: "0px 0px 4px",
         gap: 4,
         display: "flex",
         flexDirection: "column",
@@ -56,6 +57,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
     >
       <TimerIcon />
       <TimeDisplay
+        dimMs
         ts={ts}
         className="timer-number-container"
         numberStyle={{
@@ -70,7 +72,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
           fontWeight: 500,
           width: "100%",
           alignItems: "center",
-          margin: "12px auto",
+          margin: "0px auto 12px",
         }}
       />
       <div
@@ -80,10 +82,11 @@ export const Timer: FC<TimerProps> = ({ time }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: name && desc ? "flex-start" : "center",
+          justifyContent: "space-around",
         }}
       >
-        {name && desc ? (
+        {/* TODO(nickz) I don't think we need this anymore */}
+        {false && name && desc ? (
           <div
             style={{
               textAlign: "center",
@@ -127,7 +130,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
                 lineHeight: "18px",
                 color: "#ffffffaa",
                 opacity: 0.35,
-                margin: "8px auto",
+                margin: "4px auto",
                 width: "95%",
               }}
             >
@@ -139,7 +142,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
                   display: "block",
                 }}
               >
-                Personal fastest time
+                PB
               </span>
               <Badge
                 size={1.1}
@@ -147,11 +150,92 @@ export const Timer: FC<TimerProps> = ({ time }) => {
                   fontWeight: 500,
                   position: "absolute",
                   top: -4,
+                  justifyContent: "flex-end",
                   right: 0,
                 }}
                 time={stack.pb}
                 color={BadgeColors.Default}
                 icon={BadgeIcons.Crown}
+              />
+            </span>
+            {/* <span
+              style={{
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                fontSize: 24,
+                fontWeight: 400,
+                lineHeight: "18px",
+                color: "#ffffffaa",
+                opacity: 0.35,
+                margin: "4px auto",
+                width: "95%",
+              }}
+            >
+              <span
+                style={{
+                  color: "#fff",
+                  fontWeight: 500,
+                  fontSize: 17,
+                  display: "block",
+                }}
+              >
+                TPB
+              </span>
+              <Badge
+                size={1.1}
+                style={{
+                  fontWeight: 500,
+                  position: "absolute",
+                  top: -4,
+                  justifyContent: "flex-end",
+                  right: 0,
+                }}
+                time={getTheoreticalBestTime(stack)}
+                color={BadgeColors.Default}
+                icon={BadgeIcons.Zap}
+              />
+            </span> */}
+            <span
+              style={{
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyContent: "center",
+                fontSize: 24,
+                fontWeight: 400,
+                lineHeight: "18px",
+                color: "#ffffffaa",
+                opacity: 0.35,
+                margin: "4px auto",
+                width: "95%",
+              }}
+            >
+              <span
+                style={{
+                  color: "#fff",
+                  fontWeight: 500,
+                  fontSize: 17,
+                  display: "block",
+                }}
+              >
+                AVG
+              </span>
+              <Badge
+                size={1.1}
+                style={{
+                  fontWeight: 500,
+                  position: "absolute",
+                  top: -4,
+                  justifyContent: "flex-end",
+                  right: 0,
+                }}
+                time={formatTimestamp(stack.average).split(".")[0]}
+                color={BadgeColors.Default}
+                icon={BadgeIcons.Zap}
               />
             </span>
             <span
@@ -165,8 +249,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
                 fontWeight: 400,
                 lineHeight: "18px",
                 color: "#ffffffaa",
-                opacity: 0.35,
-                margin: "8px auto",
+                margin: "4px auto",
                 width: "95%",
               }}
             >
@@ -178,7 +261,7 @@ export const Timer: FC<TimerProps> = ({ time }) => {
                   display: "block",
                 }}
               >
-                Theoretical fastest time
+                ETA
               </span>
               <Badge
                 size={1.1}
@@ -187,10 +270,20 @@ export const Timer: FC<TimerProps> = ({ time }) => {
                   position: "absolute",
                   top: -4,
                   right: 0,
+                  justifyContent: "flex-end",
+                  color: "white",
                 }}
-                time={getTheoreticalBestTime(stack)}
+                time={
+                  isRunningSegmentStack(stack)
+                    ? formatDateMs(Date.now() + getEstimatedTimeLeft(stack))
+                    : isCompletedSegmentStack(stack)
+                    ? formatDateMs(
+                        stack.completed[stack.completed.length - 1].end
+                      )
+                    : formatDateMs(Date.now() + stack.average)
+                }
+                width={100}
                 color={BadgeColors.Default}
-                icon={BadgeIcons.Zap}
               />
             </span>
           </>
@@ -201,6 +294,8 @@ export const Timer: FC<TimerProps> = ({ time }) => {
 }
 
 function TimerIcon() {
+  return <span style={{ fontSize: 80 }}>👟</span>
+
   return (
     <svg
       style={{
