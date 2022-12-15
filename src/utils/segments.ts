@@ -10,29 +10,42 @@ import {
   SegmentStack,
 } from "../types/segments"
 
-export function createNewSegment(name: string, pb?: number): QueuedSegment {
+export function createNewSegment(
+  name: string,
+  desc: string,
+  pb?: number
+): QueuedSegment {
   return {
     id: uuidv4(),
     name,
+    desc,
     start: null,
     end: null,
     pb,
   }
 }
 
-export function createRunningSegment(name: string): RunningSegment {
+export function createRunningSegment(
+  name: string,
+  desc: string
+): RunningSegment {
   return {
     id: uuidv4(),
     name,
+    desc,
     start: Date.now(),
     end: null,
   }
 }
 
-export function createCompletedSegment(name: string): CompletedSegment {
+export function createCompletedSegment(
+  name: string,
+  desc: string
+): CompletedSegment {
   return {
     id: uuidv4(),
     name,
+    desc,
     start: Date.now(),
     end: Date.now() + 15 * 60 * 1000,
   }
@@ -292,13 +305,29 @@ export function completeRunningSegment(stack: SegmentStack) {
   return stack
 }
 
-export function getTotalTimeRanSoFar(stack: CompletedSegmentStack) {
-  return Date.now() - stack.completed[0].start
+export function getLengthOfSegment(segment: CompletedSegment) {
+  return segment.end - segment.start
 }
 
-// @TODO Doesn't work if there are no average.
+export function getTimeRanInSegmentSoFar(segment: RunningSegment) {
+  return Date.now() - segment.start
+}
+
+export function getTotalTimeRanSoFar(stack: RunningSegmentStack) {
+  const lastCompletedSegment =
+    stack.completed.length > 0
+      ? stack.completed[stack.completed.length - 1]
+      : undefined
+
+  const timeLastSegmentWasCompleted = lastCompletedSegment
+    ? getLengthOfSegment(lastCompletedSegment)
+    : 0
+
+  return timeLastSegmentWasCompleted + getTimeRanInSegmentSoFar(stack.running)
+}
+
 export function getEstimatedTimeLeft(stack: RunningSegmentStack) {
-  return stack.average - (Date.now() - stack.running.start)
+  return stack.average - getTotalTimeRanSoFar(stack)
 }
 
 // @TODO Doesn't work if there are no PBs really.

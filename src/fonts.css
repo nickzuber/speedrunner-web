@@ -1,0 +1,38 @@
+@font-face {
+  font-family: "Anek";
+  src: url("./fonts/Anek_Devanagari/static/AnekDevanagari/AnekDevanagari-Regular.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Anek";
+  src: url("./fonts/Anek_Devanagari/static/AnekDevanagari/AnekDevanagari-SemiBold.ttf")
+    format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Mono";
+  src: url("./fonts/Azeret_Mono/static/AzeretMono-Regular.ttf")
+    format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Mono";
+  src: url("./fonts/Azeret_Mono/static/AzeretMono-SemiBold.ttf")
+    format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Mono";
+  src: url("./fonts/Azeret_Mono/static/AzeretMono-Bold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
